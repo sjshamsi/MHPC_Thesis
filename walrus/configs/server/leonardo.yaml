@@ -1,0 +1,3 @@
+# @package _global_
+data:
+  well_base_path: "/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/datasets/"

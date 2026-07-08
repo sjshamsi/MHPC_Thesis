@@ -1,0 +1,23 @@
+defaults:
+  - field_index_map_override: bc_only_override
+  - transform: random_rotation90_train
+well_base_path: /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
+wandb_data_name: "well_allmain_only_leonardo"
+module_parameters:
+  _target_: walrus.data.MixedWellDataModule
+  batch_size: 8
+  n_steps_input: 10
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+  max_samples: 2000 # Time in fake epochs
+  well_dataset_info:
+    active_matter:
+      include_filters: []
+      exclude_filters: []
+    turbulent_radiative_layer_2D:
+      include_filters: []
+      exclude_filters: []
+    helmholtz_staircase:
+      include_filters: []
+      exclude_filters: []

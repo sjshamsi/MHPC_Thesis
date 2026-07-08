@@ -1,0 +1,15 @@
+sbatch example_run_scripts/star0_tuning_script_0.sh
+sbatch example_run_scripts/star1_tuning_script_1.sh
+sbatch example_run_scripts/star2_tuning_script_2.sh
+sbatch example_run_scripts/star3_tuning_script_3.sh
+sbatch example_run_scripts/star4_tuning_script_4.sh
+sbatch example_run_scripts/star5_tuning_script_5.sh
+sbatch example_run_scripts/star6_tuning_script_6.sh
+sbatch example_run_scripts/star7_tuning_script_7.sh
+sbatch example_run_scripts/star8_tuning_script_8.sh
+sbatch example_run_scripts/star9_tuning_script_9.sh
+sbatch example_run_scripts/star10_tuning_script_10.sh
+sbatch example_run_scripts/star11_tuning_script_11.sh
+sbatch example_run_scripts/star12_tuning_script_12.sh
+sbatch example_run_scripts/star13_tuning_script_13.sh
+sbatch example_run_scripts/star14_tuning_script_14.sh
