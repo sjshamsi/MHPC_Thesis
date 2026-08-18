@@ -10,12 +10,12 @@
 #SBATCH --cpus-per-gpu=8
 #SBATCH --mem=0
 #SBATCH --exclusive
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x-%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x-%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
 
 # Fast end-to-end pipeline check: tiny model + tiny active_matter subset (data=debug,
 # model=debug), 1 epoch. Confirms modules/venv/torchrun/data-path/checkpointing/logging
-# all work before spending real GPU-hours on LeonardoRunScripts/gen_scaling_runs.py jobs.
+# all work before spending real GPU-hours on LeonardoRunScripts/gen_star_search_runs.py jobs.
 
 set -euo pipefail
 
@@ -31,7 +31,7 @@ module load python
 module load cuda/12.2
 source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
-cd /leonardo/home/userexternal/sshamsi0/Walrus/walrus
+cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus
 
 srun python -u `which torchrun` \
     --nnodes=$SLURM_JOB_NUM_NODES \
