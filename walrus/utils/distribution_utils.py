@@ -97,17 +97,19 @@ def distribute_model(model, cfg, mesh=None):
                 and hasattr(cfg.model, "decoder")
                 and hasattr(cfg.model, "processor")
             ):
-                wrap_policy = ModuleWrapPolicy(
-                    [
-                        get_class(
-                            cfg.model.encoder._target_
-                        ),  # Better performance, but has some bugs with grad accum in FSDP
-                        get_class(
-                            cfg.model.decoder._target_
-                        ),  # Better performance, but has some bugs with grad accum in FSDP
-                        get_class(cfg.model.processor._target_),
+                wrap_classes = [get_class(cfg.model.processor._target_)]
+                if cfg.trainer.grad_acc_steps <= 1:
+                    # Wrapping encoder/decoder as their own FSDP units is better perf,
+                    # but triggers a `_saved_grad_shard`/no_sync assertion under
+                    # FSDP/HSDP once grad_acc_steps > 1 (self.model.no_sync() in
+                    # trainer/training.py only cleanly covers nested units when
+                    # there's no gradient accumulation) - so only wrap them
+                    # separately when grad accumulation is off.
+                    wrap_classes += [
+                        get_class(cfg.model.encoder._target_),
+                        get_class(cfg.model.decoder._target_),
                     ]
-                )
+                wrap_policy = ModuleWrapPolicy(wrap_classes)
             elif hasattr(model, "blocks"):
                 wrap_policy = ModuleWrapPolicy([model.blocks[0].__class__])
             else:
