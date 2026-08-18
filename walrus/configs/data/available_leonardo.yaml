@@ -1,0 +1,41 @@
+defaults:
+  - field_index_map_override: bc_only_override
+  - transform: random_rotation90_train
+
+# Mirrors all_2_3d_leonardo.yaml's structure, but trimmed down to only the datasets
+# actually downloaded under well_base_path on this cluster
+# (/leonardo_scratch/fast/ICT26_MHPC/sshamsi/datasets/) as of 2026-07-26. Use this
+# instead of all_2_3d_leonardo/smallset_leonardo for runs that should use every dataset
+# we currently have locally, rather than a subset or the full 18-dataset Well mixture
+# (most of which isn't downloaded here and would fail at data-loading time).
+well_base_path: /leonardo_scratch/fast/ICT26_MHPC/sshamsi/datasets/ # Usually overrided by server
+wandb_data_name: "well_available_leonardo"
+module_parameters:
+  _target_: walrus.data.MixedWellDataModule
+  batch_size: 8
+  n_steps_input: 10
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+  max_samples: 2000 # Time in fake epochs
+  well_dataset_info:
+    active_matter:
+      include_filters: []
+      exclude_filters: []
+    gray_scott_reaction_diffusion:
+      include_filters: []
+      exclude_filters: []
+    helmholtz_staircase:
+      include_filters: []
+      exclude_filters: []
+    turbulent_radiative_layer_2D:
+      include_filters: []
+      exclude_filters: []
+    viscoelastic_instability:
+      include_filters: []
+      exclude_filters: []
+    MHD_64:
+      include_filters: []
+      exclude_filters: []
+      step_downsample_factor: .5
+      batch_downsample_factor: .5

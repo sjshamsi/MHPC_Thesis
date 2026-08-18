@@ -1,7 +1,7 @@
 defaults:
   - field_index_map_override: bc_only_override
   - transform: random_rotation90_train
-well_base_path: /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
+well_base_path: /leonardo_scratch/fast/ICT26_MHPC/sshamsi/datasets/ # Usually overrided by server
 wandb_data_name: "well_allmain_only_leonardo"
 module_parameters:
   _target_: walrus.data.MixedWellDataModule
