@@ -1,8 +1,8 @@
 #!/bin/bash -l
-#SBATCH --job-name=fullDims_activematter_tiny_video
-#SBATCH --time=00:30:00
+#SBATCH --job-name=fullDims_6DS
+#SBATCH --time=12:00:00
 #SBATCH --partition=boost_usr_prod
-#SBATCH --qos=boost_qos_dbg
+#SBATCH --qos=normal
 #SBATCH --account=ICT26_MHPC_0
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -13,12 +13,6 @@
 #SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
 
-# Same as fullDims_activematter_tiny.sh (paper-scale architecture, shrunk
-# max_samples=50/max_epoch=6/lr_scheduler ramps=2+2, data=activematter_leonardo), but with
-# trainer.video_validation=True to render rollout-validation .mp4s, which needs ffmpeg on
-# PATH (module purge drops it, so it's added back explicitly below) - matches
-# fullDims_allDsets_tiny_video.sh's precedent.
-
 set -euo pipefail
 
 export OMP_NUM_THREADS=${SLURM_CPUS_ON_NODE}
@@ -27,19 +21,20 @@ export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
 export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
-# True (default) continues the latest run under this name - correct for resubmitting
-# after a timeout/crash. Set to False (e.g.
-# `./submit.sh --export=ALL,AUTO_RESUME=False fullDims_activematter_tiny_video.sh`) to
-# force a brand-new run_idx folder and a brand-new wandb run for a deliberate fresh
-# attempt under the same job name.
 export AUTO_RESUME=${AUTO_RESUME:-True}
 
 module purge
+module load python
 module load cuda/12.2
-export PATH="/leonardo/prod/spack/5.2/install/0.21/linux-rhel8-icelake/gcc-12.2.0/ffmpeg-6.0-lotvpyy4wu5ausweljjcb5avll2q5ql6/bin:$PATH"
+export PATH="/leonardo/home/userexternal/sshamsi0/.local/opt/ffmpeg-9.0.1/bin:$PATH"
 source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
 cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus
+
+# No need to specify model=isotropic_model but we do
+# trainer.val_frequency=2 from 10
+# trainer.rollout_val_frequency=5 from 10
+# trainer.max_epoch=71 not 201 because only 6 datasets
 
 srun python -u `which torchrun` \
     --nnodes=$SLURM_JOB_NUM_NODES \
@@ -49,18 +44,17 @@ srun python -u `which torchrun` \
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \
         train.py \
             distribution=fsdp \
-            server=leonardo \
-            data=activematter_leonardo \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
-            name=fullDims_activematter_tiny_video \
+            model=isotropic_model \
+            name=fullDims_6DS \
             trainer=defaults \
             trainer.grad_acc_steps=4 \
+            server=leonardo \
             optimizer=adam \
             optimizer.lr=2.e-4 \
-            logger.wandb_project_name="fullDims_activematter_tiny_video" \
+            logger.wandb_project_name="fullDims_6DS" \
             trainer.enable_amp=False \
             model.gradient_checkpointing_freq=2 \
-            trainer.log_interval=10 \
+            trainer.log_interval=200 \
             trainer.clip_gradient=10 \
             data.module_parameters.batch_size=2 \
             data.module_parameters.n_steps_input=6 \
@@ -76,25 +70,25 @@ srun python -u `which torchrun` \
             model.processor.time_mixing.num_heads=16 \
             model.causal_in_time=True \
             model.jitter_patches=True \
-            ++model.use_periodic_fixed_jitter=True \
-            ++model.input_field_drop=0.0 \
-            data.module_parameters.max_samples=50 \
-            trainer.short_validation_length=10 \
-            trainer.max_rollout_steps=20 \
+            data.module_parameters.max_samples=2000 \
+            trainer.short_validation_length=20 \
+            trainer.max_rollout_steps=60 \
             lr_scheduler=inv_sqrt_w_sqrt_ramps \
-            lr_scheduler.warmup_epochs=2 \
-            lr_scheduler.cooldown_epochs=2 \
-            trainer.val_frequency=1 \
-            trainer.rollout_val_frequency=1 \
+            trainer.val_frequency=2 \
+            trainer.rollout_val_frequency=5 \
             data.module_parameters.min_dt_stride=1 \
             data.module_parameters.max_dt_stride=5 \
             trainer.prediction_type="delta" \
-            trainer.max_epoch=6 \
-            data_workers=8 \
+            data=available_leonardo \
+            trainer.max_epoch=71 \
+            data_workers=10 \
             model.override_dimensionality=0 \
-            ++trainer.skip_spectral_metrics=True \
             auto_resume=$AUTO_RESUME \
             checkpoint=defaults \
             experiment=defaults \
+            ++model.use_periodic_fixed_jitter=True \
+            ++model.input_field_drop=0.0 \
+            ++trainer.skip_spectral_metrics=True \
             finetuning_mods=defaults \
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
             trainer.video_validation=True

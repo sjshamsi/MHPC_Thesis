@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH --job-name=halfDims_activematter_tiny_video
-#SBATCH --time=00:30:00
+#SBATCH --time=02:00:00
 #SBATCH --partition=boost_usr_prod
-#SBATCH --qos=boost_qos_dbg
+#SBATCH --qos=normal
 #SBATCH --account=ICT26_MHPC_0
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -17,7 +17,9 @@
 # processor_blocks=30, mlp_dim=4352; data=activematter_leonardo; same tiny/debug-queue
 # shrink pattern), but with trainer.video_validation=True to render rollout-validation
 # .mp4s, which needs ffmpeg on PATH (module purge drops it, so it's added back explicitly
-# below) - matches fullDims_activematter_tiny_video.sh's precedent.
+# below). Every ffmpeg this cluster provides via module/spack was built with
+# --disable-libx264, so make_video()'s hardcoded `-codec libx264` can never work against
+# any of them - this points at a self-built one instead (see build_ffmpeg.sh).
 
 set -euo pipefail
 
@@ -36,7 +38,7 @@ export AUTO_RESUME=${AUTO_RESUME:-True}
 
 module purge
 module load cuda/12.2
-export PATH="/leonardo/prod/spack/5.2/install/0.21/linux-rhel8-icelake/gcc-12.2.0/ffmpeg-6.0-lotvpyy4wu5ausweljjcb5avll2q5ql6/bin:$PATH"
+export PATH="/leonardo/home/userexternal/sshamsi0/.local/opt/ffmpeg-9.0.1/bin:$PATH"
 source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
 cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus

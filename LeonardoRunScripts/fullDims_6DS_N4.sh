@@ -1,10 +1,10 @@
 #!/bin/bash -l
-#SBATCH --job-name=fullDims_allDsets
+#SBATCH --job-name=fullDims_6DS_N4
 #SBATCH --time=12:00:00
 #SBATCH --partition=boost_usr_prod
 #SBATCH --qos=normal
 #SBATCH --account=ICT26_MHPC_0
-#SBATCH --nodes=1
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-gpu=8
@@ -12,17 +12,6 @@
 #SBATCH --exclusive
 #SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
-
-# Baseline run at Walrus's *original*, unmodified paper-scale architecture
-# (hidden_dim=1408, processor_blocks=40, projection_dim=48, intermediate_dim=352,
-# groups=16 - the exact model.* values from
-# ../walrus/run_scripts/pretrain_example_distributed_walrus.sh, not the smaller
-# single-node anchor used by gen_star_search_runs.py).
-#
-# Currently configured as a throughput experiment rather than the original
-# memory-matched-to-the-24-node-pretraining baseline:
-#   - trainer.max_epoch=20 instead of 101, for faster iteration while testing
-#     these throughput changes.
 
 set -euo pipefail
 
@@ -32,17 +21,20 @@ export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
 export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
-# `sbatch --export=ALL,AUTO_RESUME=False fullDims_allDsets.sh`) to for
-# brand-new run_idx folder and a brand-new wandb run for a deliberate fresh
-# attempt under the same job name.
 export AUTO_RESUME=${AUTO_RESUME:-True}
 
 module purge
 module load python
 module load cuda/12.2
+export PATH="/leonardo/home/userexternal/sshamsi0/.local/opt/ffmpeg-9.0.1/bin:$PATH"
 source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
 cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus
+
+# No need to specify model=isotropic_model but we do
+# trainer.val_frequency=2 from 10
+# trainer.rollout_val_frequency=5 from 10
+# trainer.max_epoch=71 not 201 because only 6 datasets
 
 srun python -u `which torchrun` \
     --nnodes=$SLURM_JOB_NUM_NODES \
@@ -52,18 +44,17 @@ srun python -u `which torchrun` \
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \
         train.py \
             distribution=fsdp \
-            server=leonardo \
-            data=available_leonardo \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
-            name=fullDims_allDsets \
+            model=isotropic_model \
+            name=fullDims_6DS_N4 \
             trainer=defaults \
             trainer.grad_acc_steps=4 \
+            server=leonardo \
             optimizer=adam \
             optimizer.lr=2.e-4 \
-            logger.wandb_project_name="fullDims_allDsets" \
+            logger.wandb_project_name="fullDims_6DS" \
             trainer.enable_amp=False \
             model.gradient_checkpointing_freq=2 \
-            trainer.log_interval=100 \
+            trainer.log_interval=200 \
             trainer.clip_gradient=10 \
             data.module_parameters.batch_size=2 \
             data.module_parameters.n_steps_input=6 \
@@ -79,23 +70,25 @@ srun python -u `which torchrun` \
             model.processor.time_mixing.num_heads=16 \
             model.causal_in_time=True \
             model.jitter_patches=True \
-            ++model.use_periodic_fixed_jitter=True \
-            ++model.input_field_drop=0.0 \
             data.module_parameters.max_samples=2000 \
             trainer.short_validation_length=20 \
             trainer.max_rollout_steps=60 \
             lr_scheduler=inv_sqrt_w_sqrt_ramps \
-            trainer.val_frequency=10 \
-            trainer.rollout_val_frequency=10 \
+            trainer.val_frequency=2 \
+            trainer.rollout_val_frequency=5 \
             data.module_parameters.min_dt_stride=1 \
             data.module_parameters.max_dt_stride=5 \
             trainer.prediction_type="delta" \
+            data=available_leonardo \
             trainer.max_epoch=71 \
-            data_workers=8 \
+            data_workers=10 \
             model.override_dimensionality=0 \
-            ++trainer.skip_spectral_metrics=True \
             auto_resume=$AUTO_RESUME \
             checkpoint=defaults \
             experiment=defaults \
+            ++model.use_periodic_fixed_jitter=True \
+            ++model.input_field_drop=0.0 \
+            ++trainer.skip_spectral_metrics=True \
             finetuning_mods=defaults \
-            trainer.video_validation=False
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
+            trainer.video_validation=True

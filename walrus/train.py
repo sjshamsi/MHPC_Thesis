@@ -31,6 +31,46 @@ from walrus.utils.experiment_utils import (
 logger = logging.getLogger("walrus")
 # logger.setLevel(level=logging.DEBUG)
 
+WANDB_RUN_ID_FILENAME = "wandb_run_id.txt"
+
+
+def get_or_create_wandb_run_id(experiment_folder: str) -> str:
+    """Return a stable W&B run id for this experiment folder, creating one if needed.
+
+    Persisting the id alongside the checkpoint (rather than deriving it from e.g. the
+    SLURM job id) means a resumed run - which reuses this same experiment_folder, see
+    configure_experiment - naturally reattaches to the same W&B run, including across
+    offline runs synced later with `wandb sync`.
+
+    Only call this for a training launch (not validation_mode - see main()), since it
+    writes into experiment_folder and a validation-only run against an older folder
+    that predates this function should stay a pure read.
+    """
+    run_id_file = pathlib.Path(experiment_folder) / WANDB_RUN_ID_FILENAME
+    content = run_id_file.read_text().strip() if run_id_file.is_file() else ""
+    if content:
+        return content
+    run_id = wandb.util.generate_id()
+    try:
+        # O_EXCL makes the create-if-absent atomic, so two processes racing to
+        # initialize the same fresh experiment_folder can't each write a
+        # different id - the loser reads back the winner's id instead.
+        fd = os.open(run_id_file, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        content = run_id_file.read_text().strip()
+        if content:
+            return content
+        # Existing file is empty (leftover from a crash mid-write, or the
+        # winner of the race above hasn't flushed yet) - claim it rather than
+        # leaving a dangling empty file that would force every future launch
+        # against this folder to keep regenerating a fresh, never-persisted id.
+        run_id_file.write_text(run_id)
+        return run_id
+    with os.fdopen(fd, "w") as f:
+        f.write(run_id)
+    return run_id
+
+
 # Retrieve configuration for hydra
 CONFIG_DIR = pathlib.Path(__file__).parent / "configs"
 CONFIG_NAME = "config"
@@ -360,11 +400,16 @@ def main(cfg: DictConfig):
         cfg.data.module_parameters.batch_size * world_size
     ) * cfg.trainer.grad_acc_steps
     if rank == 0 and cfg.logger.wandb:
+        wandb_init_kwargs = {}
+        if cfg.automatic_setup and not cfg.validation_mode:
+            wandb_init_kwargs["id"] = get_or_create_wandb_run_id(experiment_folder)
+            wandb_init_kwargs["resume"] = "allow"
         wandb.init(
             project=cfg.logger.wandb_project_name,
             group=f"{cfg.data.wandb_data_name}",
             config=config_for_wandb,
             name=experiment_name,
+            **wandb_init_kwargs,
         )
     train(
         cfg,

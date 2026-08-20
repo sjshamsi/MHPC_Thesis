@@ -113,26 +113,136 @@ Generated scripts (`star_search_run_N.sh`, `tuning_run_N.sh`) don't need this: t
 (`gen_star_search_runs.py`, `gen_tuning_scripts.py`) already create the directory when they write
 each script, so plain `sbatch star_search_run_3.sh` / `bash run_star_search_all.sh` is fine.
 
-**Tracing a checkpoint back to its SLURM job(s)**: `walrus/train.py::main` appends the
-`SLURM_JOB_ID` of every job that has written to a given experiment folder into
-`logs/<name>/<run-idx>/slurm_job_ids.txt`. Since `auto_resume=True` (see below) means a single
-logical run can span several 24h SLURM submissions, this file lets you go from a checkpoint
-directory to the exact `logs/slurm/<job_name>/<job_id>.out` for every job that contributed to it.
-
 **Resuming vs. starting fresh under the same job name**: `configure_experiment`
-(`walrus/utils/experiment_utils.py`) picks up the *latest* existing `<run-idx>` folder (and,
-transitively, the same `wandb_run_id.txt` → same W&B run) whenever `auto_resume=True` and a
-previous run already exists under that experiment name — this is exactly what you want when a job
-times out and you resubmit the same script to continue it. But it means blindly re-running the
-same script to start an unrelated fresh attempt (e.g. after tweaking something that isn't part of
-the auto-decorated experiment name) silently merges into the old run's checkpoints and W&B history
-instead of registering as new. Every non-smoke-test script here now exposes this as an
-overridable `AUTO_RESUME` env var (default `True`, i.e. today's resume behavior unchanged):
+(`walrus/utils/experiment_utils.py`) picks up the *latest* existing `<run-idx>` folder whenever
+`auto_resume=True` and a previous run already exists under that experiment name — this is exactly
+what you want when a job times out and you resubmit the same script to continue it. Training
+resume follows the checkpoint in that folder as usual. W&B resume piggybacks on the same folder:
+the first time an experiment folder is created, `walrus/train.py::get_or_create_wandb_run_id`
+generates a W&B run id and writes it to `<run-idx>/wandb_run_id.txt`; every later launch that
+resolves to that same folder reads the id back and passes it to `wandb.init(id=..., resume="allow")`,
+so the new offline run reattaches to the same W&B run instead of starting a separate one. Since
+`WANDB_MODE=offline` still writes a fresh local `offline-run-<timestamp>-<id>/` directory per
+launch, this only takes effect once you `wandb sync` those directories (see below) — but because
+they share an `id`, syncing them all with `--append` (see below) merges into one online run's
+history rather than several. Sharing an `id` alone isn't enough for that history to line up
+correctly, though: each launch is a fresh process, so without an explicit `step=` on every
+`wandb.log()` call its internal step counter would restart at 0 every time and each resumed
+launch would overwrite the previous one's history instead of extending it. `Trainer.train()`
+(`walrus/trainer/training.py`) passes `step=epoch` to every `wandb.log()` call specifically so
+each launch's data lands at its own non-overlapping, globally-meaningful step.
+
+Blindly re-running the same script to start an unrelated fresh attempt (e.g. after tweaking
+something that isn't part of the auto-decorated experiment name) would otherwise silently merge
+into the old run's checkpoints and W&B history instead of registering as new. Every non-smoke-test
+script here exposes this as an overridable `AUTO_RESUME` env var (default `True`, i.e. today's
+resume behavior unchanged):
 ```
 ./submit.sh anchor_dimension_run.sh                                   # resume latest run (default)
 ./submit.sh --export=ALL,AUTO_RESUME=False anchor_dimension_run.sh    # force a brand-new run_idx + W&B run
 ```
 (`smoke_test.sh` always passes `auto_resume=False` directly — a smoke test should never resume.)
+
+**Resubmitting after a timeout**: there's no automatic requeue — when a job hits its `--time`
+limit, resubmit the same script by hand, e.g. `./submit.sh --dependency=singleton anchor_dimension_run.sh`.
+`--dependency=singleton` makes SLURM hold the new submission until no job with that script's
+`--job-name` is still pending/running for you, so you can't accidentally double-submit while the
+timed-out job is still draining; the multinode scripts already bake this into their `#SBATCH`
+header, but it's equally safe to pass it as an extra `submit.sh`/`sbatch` argument for the
+single-node ones. (An earlier `watch_and_resubmit.sh` poller that automated this loop has been
+removed — it predated `--dependency=singleton` and had no awareness of the W&B run-id continuation
+above, so a manual resubmit is now the supported path.)
+
+**Queueing several resumptions ahead of time**: `--dependency=singleton` isn't limited to "one
+resubmit after the fact" — SLURM's own semantics for it are "begin execution after *any*
+previously launched jobs sharing this job name and user have terminated" (completed, failed, or
+timed out all count), not just the immediately preceding one. So submitting the same script
+several times in a row up front,
+```
+./submit.sh --dependency=singleton anchor_dimension_run.sh
+./submit.sh --dependency=singleton anchor_dimension_run.sh
+./submit.sh --dependency=singleton anchor_dimension_run.sh
+```
+serializes them: the 2nd waits for the 1st to terminate, the 3rd waits for *both* the 1st and 2nd,
+which in practice means they run strictly one at a time in submission order, each auto-resuming
+from whatever checkpoint the previous one left. Two things worth knowing before relying on this:
+account/QOS submit limits (`sacctmgr show assoc` / `show qos` — `boost_qos_dbg` in particular caps
+submitted jobs per user quite low) can reject queueing too many at once; and a queued job that
+starts after training has already reached `max_epoch` isn't free — it still launches, finds
+nothing left to train, and just runs the final test-validation pass before exiting, so queue
+roughly the count you actually expect to need rather than padding it.
+
+### Job submission cheat sheet: resume, fresh, or avoiding collisions
+
+Everything above explains the *mechanism*; this is the actionable version.
+
+**To resume a run that timed out or crashed:**
+1. Resubmit the exact same script with the exact same CLI overrides, unchanged (add
+   `--dependency=singleton` if you want the double-submit guard from above; several such
+   submissions queued up front will run one after another automatically, see below).
+2. That's it — `auto_resume=True` (the default) makes `configure_experiment` find the same
+   `<run-idx>` folder, load `checkpoints/last`, and reattach to the same `wandb_run_id.txt`.
+3. **Don't change anything under `model.*`** (`hidden_dim`, `processor_blocks`, `mlp_dim`,
+   `num_heads`, encoder/decoder/processor choice, etc.) between submissions of the same run.
+   `frozen_components` in `experiment/defaults.yaml` documents an intent to auto-import the old
+   model config on resume, but only `frozen_components: [all]` is actually implemented
+   (`configure_experiment` in `walrus/utils/experiment_utils.py`) — the default `[model]` value
+   does **not** currently protect you, so an architecture change here will try to load a
+   checkpoint into a differently-shaped model instead of erroring cleanly.
+4. Increasing `trainer.max_epoch` between submissions is fine and expected (that's exactly what
+   `test_resume_wandb.sh` exercises) — it's a loop bound, not part of any checkpointed shape.
+
+**To start a genuinely new, independent run:**
+- If the script exposes `AUTO_RESUME` (every hand-written script here except `smoke_test.sh`
+  does): `./submit.sh --export=ALL,AUTO_RESUME=False <script>.sh`. Same `name=`, but a brand-new
+  `<run-idx>` folder, fresh weights, and a fresh W&B run — nothing from the old run carries over.
+- Otherwise, or as a more explicit alternative: give it a different `name=`. This always creates a
+  new folder regardless of `auto_resume`, since the folder path starts from `name`.
+
+**Avoiding accidental collisions — how the folder name actually works:** `get_experiment_name`
+(`walrus/utils/experiment_utils.py`) builds the on-disk folder name as
+`{name}-{data}-{prediction_type}-{model}[{encoder}-{decoder}-{processor}]-{optimizer}-{lr}` —
+your `name=`, the data config's `wandb_data_name`, `trainer.prediction_type`, and the *class
+names* of model/encoder/decoder/processor/optimizer plus `optimizer.lr`. Notably, it does **not**
+include `model.hidden_dim`, `processor_blocks`, `mlp_dim`, `num_heads`, `batch_size`,
+`trainer.max_epoch`, or basically anything else you'd typically sweep. Two consequences:
+- Two runs that differ only in one of those un-encoded values (e.g. a `hidden_dim` sweep) but
+  share the same `name=`/data/model-class/optimizer/lr will resolve to the **same** folder and
+  silently resume into each other's checkpoint instead of running independently. Always bake
+  whatever you're varying into `name=` itself if it isn't already part of the decorated name —
+  exactly what `gen_star_search_runs.py` already does
+  (`job_name = f"star{count}_hidden{hidden_dim}_depth{depth}_mlp{mlp}"`, passed as `name=`).
+- The reverse mistake is just as easy: if you're trying to *resume* a run but tweak something
+  that *is* part of the decorated name (e.g. nudge `optimizer.lr`), you won't get an error — you
+  silently land in a brand-new `<run-idx>` folder with fresh weights instead of continuing.
+
+**Testing resume + W&B continuation**: `test_resume_wandb.sh` runs the tiny `data=debug
+model=debug trainer=debug` config four times back to back under one job - a fresh 1-epoch run,
+then three simulated resubmissions each training one epoch further (to epoch 2, 3, then 4) - and
+asserts the checkpoint resume and the `wandb_run_id.txt` reuse described above actually happened
+at every step, rather than trusting it by inspection.
+```
+./submit.sh test_resume_wandb.sh
+```
+Safe to rerun any time; each invocation starts its own fresh `run_idx` (phase 1 always passes
+`auto_resume=False`) so repeated test runs never collide with each other or with real experiments
+(it uses a separate `wandb_project_name=walrus_leonardo_test`). Compute nodes have no outbound
+internet, so the script itself can only leave behind four offline W&B run directories sharing one
+run id; it prints the exact follow-up command to run from the login node afterward, scoped to just
+those four runs so it doesn't also sweep in every other unsynced real run sitting in the same
+shared `WANDB_DIR`:
+```
+cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all --append \
+    --include-offline --include-globs="run-<run-id>.wandb"
+```
+(`--sync-all` always scans `./wandb` relative to the current directory and ignores any path
+argument, hence the `cd`; `--include-globs` matches the `.wandb` filename *inside* each
+`offline-run-*/` directory, e.g. `run-<run-id>.wandb`, not the `offline-run-*/` directory name;
+`--append` tells the server to attach each directory's history to the existing run id instead of
+starting a new one each time.)
+Then check the `walrus_leonardo_test` project on wandb.ai for that run id — it should show up as
+a **single** run whose `train/epoch` metric rises continuously from 1 to 4, not four separate
+runs. See the script's own comments for exactly what it checks.
 
 **One-time setup** (from the login node, which has internet — compute nodes don't):
 ```
@@ -145,6 +255,14 @@ This writes credentials to `~/.netrc`, used by both `wandb sync` and any future 
 **Syncing a run** afterward:
 ```
 wandb sync /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-<timestamp>-<id>
-# or sync every not-yet-synced run at once:
-wandb sync --sync-all /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/wandb/
+# or sync every not-yet-synced run at once - note --sync-all always scans ./wandb relative to
+# the current directory and silently ignores any path argument, so cd there first:
+cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all
+```
+If a run was ever resumed (`auto_resume=True` picking up an existing `wandb_run_id.txt`, see
+above), add `--append` so the later offline directories attach to the same online run instead of
+each creating a separate one:
+```
+cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all --append \
+    --include-offline --include-globs="run-<run-id>.wandb"
 ```

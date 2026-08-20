@@ -1,10 +1,10 @@
 #!/bin/bash -l
-#SBATCH --job-name=fullDims_FT_ActiveMatter
+#SBATCH --job-name=fullDims_FT_ActiveMatter_N4
 #SBATCH --time=12:00:00
 #SBATCH --partition=boost_usr_prod
 #SBATCH --qos=normal
 #SBATCH --account=ICT26_MHPC_0
-#SBATCH --nodes=1
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-gpu=8
@@ -71,6 +71,7 @@ export AUTO_RESUME=${AUTO_RESUME:-True}
 module purge
 module load python
 module load cuda/12.2
+export PATH="/leonardo/home/userexternal/sshamsi0/.local/opt/ffmpeg-9.0.1/bin:$PATH"
 source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
 cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus
@@ -84,7 +85,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             model=isotropic_model \
-            name=fullDims_finetuneActiveMatter_longRun \
+            name=fullDims_FT_ActiveMatter_N4 \
             trainer=defaults \
             trainer.grad_acc_steps=1 \
             server=leonardo \
@@ -131,4 +132,4 @@ srun python -u `which torchrun` \
             finetuning_mods=all \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
             data/field_index_map_override=full_well_field_index \
-            trainer.video_validation=False
+            trainer.video_validation=True
