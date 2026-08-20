@@ -13,6 +13,7 @@ from typing import Any, Callable, Literal, Optional
 import numpy as np
 import torch
 import torch.distributed as dist
+import torch.profiler
 import wandb
 from the_well.benchmark.metrics import (
     VRMSE,
@@ -176,6 +177,11 @@ class Trainer:
         start_val_loss: Optional[float] = None,
         epsilon: float = 1e-5,
         validation_epsilon: float = 1e-5,
+        profiler_enabled: bool = False,
+        profiler_wait: int = 5,
+        profiler_warmup: int = 3,
+        profiler_active: int = 5,
+        profiler_with_stack: bool = False,
     ):
         """
         Class in charge of the training loop. It performs train, validation and test.
@@ -280,6 +286,22 @@ class Trainer:
             A small float added to denominators in denominators during training for numerical stability. Reasonably varies between runs.
         validation_epsilon:
             A small float added to denominators in loss functions during validation for numerical stability. Should be kept consistent across runs.
+        profiler_enabled:
+            A boolean flag to enable torch.profiler tracing. When True, traces the first training
+            epoch and the first validation dataloader once, writing Chrome-trace/TensorBoard files
+            to '{viz_folder}/profiler_traces'. Left off by default since it adds overhead - only
+            meant for short, dedicated profiling runs.
+        profiler_wait:
+            Number of steps torch.profiler skips (no tracing) before warmup starts.
+        profiler_warmup:
+            Number of steps torch.profiler runs but discards (lets kernels/allocator warm up)
+            before it starts recording.
+        profiler_active:
+            Number of steps torch.profiler actually records once warmup finishes.
+        profiler_with_stack:
+            A boolean flag to record Python stack traces per op. Useful for tracing an expensive
+            op (e.g. a stray .cpu()/deepcopy) back to a source line, but adds noticeable overhead
+            and much larger trace files, so it's off by default.
         """
         self.experiment_name = experiment_name
         self.viz_folder = viz_folder
@@ -376,6 +398,15 @@ class Trainer:
             epsilon  # Used for compatibility with configs from before split occurred
         )
         self.validation_epsilon = validation_epsilon
+        self.profiler_enabled = profiler_enabled
+        self.profiler_wait = profiler_wait
+        self.profiler_warmup = profiler_warmup
+        self.profiler_active = profiler_active
+        self.profiler_with_stack = profiler_with_stack
+        # Validation is called many times per run (every val_frequency epochs, across
+        # multiple dataloaders) - only trace the first dataloader of the first call so a
+        # profiling run doesn't keep re-tracing (and re-paying warmup cost) every epoch.
+        self._profiler_val_used = False
 
         self.formatter_dict = {}
         # Initial formatter for each dataset - right now these are all identical
@@ -398,6 +429,39 @@ class Trainer:
             local=self.distribution_type.upper() in ["LOCAL", "DDP"],
         )
         return checkpoint_future
+
+    def _build_profiler(self, tag: str) -> torch.profiler.profile:
+        """Build a torch.profiler.profile that traces `profiler_active` steps after
+        `profiler_wait` + `profiler_warmup` steps, once, then stops (repeat=1).
+
+        Writes one Chrome-trace/TensorBoard file per rank per call site (`tag` is e.g.
+        "train" or "valid") to '{viz_folder}/profiler_traces', so multi-GPU/multi-node
+        runs (FSDP/HSDP all-gather, reduce-scatter, NCCL) all show up, one file per rank.
+        """
+        trace_dir = os.path.join(self.viz_folder, "profiler_traces")
+        os.makedirs(trace_dir, exist_ok=True)
+        logger.info(
+            f"Rank {self.rank}: torch.profiler enabled for '{tag}', tracing to {trace_dir} "
+            f"(wait={self.profiler_wait}, warmup={self.profiler_warmup}, active={self.profiler_active})"
+        )
+        return torch.profiler.profile(
+            activities=[
+                torch.profiler.ProfilerActivity.CPU,
+                torch.profiler.ProfilerActivity.CUDA,
+            ],
+            schedule=torch.profiler.schedule(
+                wait=self.profiler_wait,
+                warmup=self.profiler_warmup,
+                active=self.profiler_active,
+                repeat=1,
+            ),
+            on_trace_ready=torch.profiler.tensorboard_trace_handler(
+                trace_dir, worker_name=f"rank{self.rank}_{tag}", use_gzip=True
+            ),
+            record_shapes=True,
+            profile_memory=True,
+            with_stack=self.profiler_with_stack,
+        )
 
     def rollout_model(self, model, batch, formatter, train=True, fake_pass=False):
         """Rollout the model for as many steps as we have data for.
@@ -689,182 +753,191 @@ class Trainer:
                 enabled=self.enable_amp,
                 dtype=self.amp_type,
             ):
-                for j, batch in enumerate(dataloader):
-                    # Validation datasets don't automatically add metadata
-                    start_time = time.time()
-                    # Rollout for length of target - fake pass if not evaluating on this node
-                    # so that we get the right field names for reduction
-                    for kk in range(self.validation_full_trajectory_ensemble_size):
-                        y_pred_internal, y_ref_internal = self.rollout_model(
-                            self.model,
-                            batch,
-                            self.formatter_dict[dset_name],
-                            train=False,
-                            fake_pass=(
-                                rank_assignment != self.sync_group_rank
-                            ),  # Leftover from earlier design - should never be true due to continue above
-                        )
-                        if kk == 0:
-                            y_pred = (
-                                y_pred_internal
-                                / self.validation_full_trajectory_ensemble_size
+                profile_val = (
+                    self.profiler_enabled and i == 0 and not self._profiler_val_used
+                )
+                val_profiler_ctx = (
+                    self._build_profiler("valid") if profile_val else nullcontext()
+                )
+                with val_profiler_ctx as val_prof:
+                    for j, batch in enumerate(dataloader):
+                        # Validation datasets don't automatically add metadata
+                        start_time = time.time()
+                        # Rollout for length of target - fake pass if not evaluating on this node
+                        # so that we get the right field names for reduction
+                        for kk in range(self.validation_full_trajectory_ensemble_size):
+                            y_pred_internal, y_ref_internal = self.rollout_model(
+                                self.model,
+                                batch,
+                                self.formatter_dict[dset_name],
+                                train=False,
+                                fake_pass=(
+                                    rank_assignment != self.sync_group_rank
+                                ),  # Leftover from earlier design - should never be true due to continue above
                             )
-                            y_ref = y_ref_internal  # This doesn't change
-                        else:
-                            y_pred += (
-                                y_pred_internal
-                                / self.validation_full_trajectory_ensemble_size
-                            )
-                    assert y_ref.shape == y_pred.shape, (
-                        f"Mismatching shapes between reference {y_ref.shape} and prediction {y_pred.shape}"
-                    )
-                    # Go through losses
-                    model_time = time.time() - start_time
-                    if (
-                        batch["padded_field_mask"].shape[0] != y_pred.shape[-1]
-                    ):  # Quick hack for Neutron and the underscores in the dimension names...
-                        batch["padded_field_mask"] = batch["padded_field_mask"][
-                            : y_pred.shape[-1]
-                        ]
-                    # Don't evaluate loss of "padded" dimensions so we're not biased towards predicting 0
-                    y_pred, y_ref = (
-                        y_pred[..., batch["padded_field_mask"]],
-                        y_ref[..., batch["padded_field_mask"]],
-                    )
-
-                    # Collecting names to make detailed output logs
-                    used_field_names = [
-                        f
-                        for i, f in enumerate(field_names)
-                        if batch["padded_field_mask"][i]
-                    ]
-
-                    # Iterate through all validation metrics and log them.
-                    for loss_fn in self.validation_suite:
-                        # Mean over batch and time per field
-                        if (
-                            self.skip_spectral_metrics
-                            and "spectr" in loss_fn.__class__.__name__
-                        ):
-                            continue
-                        # Loss fn expect B T [H W D] C where [H W D] are described by metadata
-                        loss = loss_fn(
-                            y_pred, y_ref, current_metadata, eps=self.validation_epsilon
-                        )
-                        # Some losses return multiple values for efficiency, so if not dict,
-                        # wrap in dict here
-                        if not isinstance(loss, dict):
-                            loss = {loss_fn.__class__.__name__: loss}
-                        # Split the losses and update the logging dictionary
-                        for k, sub_loss in loss.items():
-                            # Each loss is B, T, C
-                            new_losses, new_time_logs = self.split_up_losses(
-                                sub_loss, k, dset_name, used_field_names
-                            )
-                            # TODO Break spectral error into second category using new API
-                            for loss_name, batch_losses in new_losses.items():
-                                if loss_name in rank_loss_dict:
-                                    rank_loss_dict[loss_name] = torch.cat(
-                                        [rank_loss_dict[loss_name], batch_losses], dim=0
-                                    )
-                                else:
-                                    rank_loss_dict[loss_name] = batch_losses
-                                # Let's just store the VRMSE for printout since that's what we're actually looking at on aggregate.
-                                if "full_VRMSE_T=all" in loss_name:
-                                    vrmse = batch_losses.mean().item()
-                            if dataset.full_trajectory_mode:
-                                for loss_name, batch_time_logs in new_time_logs.items():
-                                    if loss_name in dset_time_logs:
-                                        # Time logs live on CPU for mem reasons
-                                        dset_time_logs[loss_name] = torch.cat(
-                                            [
-                                                dset_time_logs[loss_name],
-                                                batch_time_logs,
-                                            ],
-                                            dim=0,
-                                        )
-                                    else:
-                                        dset_time_logs[loss_name] = batch_time_logs
-                    # NOW do trajectory losses if we have them - can probably combine with above later
-                    if dataset.full_trajectory_mode:
-                        for traj_loss_fn in self.validation_trajectory_metrics or []:
-                            traj_loss = traj_loss_fn(
-                                y_pred, y_ref, current_metadata, batch["metadata"]
-                            )
-                            if not isinstance(traj_loss, dict):
-                                traj_loss = {traj_loss_fn.__class__.__name__: traj_loss}
-                            # Note - still use split up losses for per-field even if temporal not relevant
-                            for k, sub_traj_loss in traj_loss.items():
-                                new_traj_losses, _ = self.split_up_losses(
-                                    sub_traj_loss, k, dset_name, used_field_names
+                            if kk == 0:
+                                y_pred = (
+                                    y_pred_internal
+                                    / self.validation_full_trajectory_ensemble_size
                                 )
-                                for loss_name, batch_losses in new_traj_losses.items():
+                                y_ref = y_ref_internal  # This doesn't change
+                            else:
+                                y_pred += (
+                                    y_pred_internal
+                                    / self.validation_full_trajectory_ensemble_size
+                                )
+                        assert y_ref.shape == y_pred.shape, (
+                            f"Mismatching shapes between reference {y_ref.shape} and prediction {y_pred.shape}"
+                        )
+                        # Go through losses
+                        model_time = time.time() - start_time
+                        if (
+                            batch["padded_field_mask"].shape[0] != y_pred.shape[-1]
+                        ):  # Quick hack for Neutron and the underscores in the dimension names...
+                            batch["padded_field_mask"] = batch["padded_field_mask"][
+                                : y_pred.shape[-1]
+                            ]
+                        # Don't evaluate loss of "padded" dimensions so we're not biased towards predicting 0
+                        y_pred, y_ref = (
+                            y_pred[..., batch["padded_field_mask"]],
+                            y_ref[..., batch["padded_field_mask"]],
+                        )
+
+                        # Collecting names to make detailed output logs
+                        used_field_names = [
+                            f
+                            for i, f in enumerate(field_names)
+                            if batch["padded_field_mask"][i]
+                        ]
+
+                        # Iterate through all validation metrics and log them.
+                        for loss_fn in self.validation_suite:
+                            # Mean over batch and time per field
+                            if (
+                                self.skip_spectral_metrics
+                                and "spectr" in loss_fn.__class__.__name__
+                            ):
+                                continue
+                            # Loss fn expect B T [H W D] C where [H W D] are described by metadata
+                            loss = loss_fn(
+                                y_pred, y_ref, current_metadata, eps=self.validation_epsilon
+                            )
+                            # Some losses return multiple values for efficiency, so if not dict,
+                            # wrap in dict here
+                            if not isinstance(loss, dict):
+                                loss = {loss_fn.__class__.__name__: loss}
+                            # Split the losses and update the logging dictionary
+                            for k, sub_loss in loss.items():
+                                # Each loss is B, T, C
+                                new_losses, new_time_logs = self.split_up_losses(
+                                    sub_loss, k, dset_name, used_field_names
+                                )
+                                # TODO Break spectral error into second category using new API
+                                for loss_name, batch_losses in new_losses.items():
                                     if loss_name in rank_loss_dict:
                                         rank_loss_dict[loss_name] = torch.cat(
-                                            [rank_loss_dict[loss_name], batch_losses],
-                                            dim=0,
+                                            [rank_loss_dict[loss_name], batch_losses], dim=0
                                         )
                                     else:
                                         rank_loss_dict[loss_name] = batch_losses
-                    total_time = time.time() - start_time
-                    max_mem_GB = torch.cuda.max_memory_allocated() / 1024**3
-                    # Only print out if local device actually doing something
-                    if rank_assignment == self.sync_group_rank:
-                        logger.info(
-                            f"{valid_or_test}: {dset_name}, Batch {j + 1}/{denom}, Rank {self.rank:>3}: Field-time-averaged VRMSE {vrmse:7.4f}, mem {max_mem_GB:5.2f} GB, total_time {total_time:5.3f}s, model {model_time:5.4f}s"
-                        )
-                    if torch.cuda.is_available():
-                        torch.cuda.reset_peak_memory_stats()
-                    count += 1
-                    # Do some detailed outputs on rank 0 if specified
-                    if (
-                        self.rank_in_sync_group == 0
-                        and rank_assignment == self.sync_group_rank
-                    ):
+                                    # Let's just store the VRMSE for printout since that's what we're actually looking at on aggregate.
+                                    if "full_VRMSE_T=all" in loss_name:
+                                        vrmse = batch_losses.mean().item()
+                                if dataset.full_trajectory_mode:
+                                    for loss_name, batch_time_logs in new_time_logs.items():
+                                        if loss_name in dset_time_logs:
+                                            # Time logs live on CPU for mem reasons
+                                            dset_time_logs[loss_name] = torch.cat(
+                                                [
+                                                    dset_time_logs[loss_name],
+                                                    batch_time_logs,
+                                                ],
+                                                dim=0,
+                                            )
+                                        else:
+                                            dset_time_logs[loss_name] = batch_time_logs
+                        # NOW do trajectory losses if we have them - can probably combine with above later
                         if dataset.full_trajectory_mode:
-                            if self.video_validation and count < self.num_detailed_logs:
-                                try:
-                                    make_video(
-                                        y_pred[0],  # First sample only in batch
-                                        y_ref[0],  # First sample only in batch
-                                        current_metadata,
-                                        self.viz_folder,
-                                        f"{epoch}_rank{self.rank}_{valid_or_test}_batch{j}",  # For the file name
-                                        field_name_overrides=used_field_names,  # Fields actually used
-                                        size_multiplier=self.video_size_multiplier,  # Shrinking for bulk runs, but visuals tuned around 1
+                            for traj_loss_fn in self.validation_trajectory_metrics or []:
+                                traj_loss = traj_loss_fn(
+                                    y_pred, y_ref, current_metadata, batch["metadata"]
+                                )
+                                if not isinstance(traj_loss, dict):
+                                    traj_loss = {traj_loss_fn.__class__.__name__: traj_loss}
+                                # Note - still use split up losses for per-field even if temporal not relevant
+                                for k, sub_traj_loss in traj_loss.items():
+                                    new_traj_losses, _ = self.split_up_losses(
+                                        sub_traj_loss, k, dset_name, used_field_names
                                     )
-                                except CalledProcessError as e:
-                                    logger.warning(
-                                        f"Error in making video due to FFMPEG: {e}. Skipping video."
+                                    for loss_name, batch_losses in new_traj_losses.items():
+                                        if loss_name in rank_loss_dict:
+                                            rank_loss_dict[loss_name] = torch.cat(
+                                                [rank_loss_dict[loss_name], batch_losses],
+                                                dim=0,
+                                            )
+                                        else:
+                                            rank_loss_dict[loss_name] = batch_losses
+                        total_time = time.time() - start_time
+                        max_mem_GB = torch.cuda.max_memory_allocated() / 1024**3
+                        # Only print out if local device actually doing something
+                        if rank_assignment == self.sync_group_rank:
+                            logger.info(
+                                f"{valid_or_test}: {dset_name}, Batch {j + 1}/{denom}, Rank {self.rank:>3}: Field-time-averaged VRMSE {vrmse:7.4f}, mem {max_mem_GB:5.2f} GB, total_time {total_time:5.3f}s, model {model_time:5.4f}s"
+                            )
+                        if torch.cuda.is_available():
+                            torch.cuda.reset_peak_memory_stats()
+                        count += 1
+                        if val_prof is not None:
+                            val_prof.step()
+                        # Do some detailed outputs on rank 0 if specified
+                        if (
+                            self.rank_in_sync_group == 0
+                            and rank_assignment == self.sync_group_rank
+                        ):
+                            if dataset.full_trajectory_mode:
+                                if self.video_validation and count < self.num_detailed_logs:
+                                    try:
+                                        make_video(
+                                            y_pred[0],  # First sample only in batch
+                                            y_ref[0],  # First sample only in batch
+                                            current_metadata,
+                                            self.viz_folder,
+                                            f"{epoch}_rank{self.rank}_{valid_or_test}_batch{j}",  # For the file name
+                                            field_name_overrides=used_field_names,  # Fields actually used
+                                            size_multiplier=self.video_size_multiplier,  # Shrinking for bulk runs, but visuals tuned around 1
+                                        )
+                                    except CalledProcessError as e:
+                                        logger.warning(
+                                            f"Error in making video due to FFMPEG: {e}. Skipping video."
+                                        )
+                                # Write out prediction and reference as npy for later analysis
+                                if (
+                                    self.dump_prediction_to_disk
+                                    and count < self.num_detailed_logs
+                                ):
+                                    dump_path = os.path.join(
+                                        self.viz_folder, dset_name, "full_trajectory_dumps"
                                     )
-                            # Write out prediction and reference as npy for later analysis
-                            if (
-                                self.dump_prediction_to_disk
-                                and count < self.num_detailed_logs
-                            ):
-                                dump_path = os.path.join(
-                                    self.viz_folder, dset_name, "full_trajectory_dumps"
-                                )
-                                if not os.path.exists(dump_path):
-                                    os.makedirs(dump_path, exist_ok=True)
-                                np.save(
-                                    os.path.join(
-                                        dump_path,
-                                        f"yref_{dset_name}_{valid_or_test}_epoch{epoch}_rank{self.rank}_{j}.npy",
-                                    ),
-                                    y_ref.cpu().numpy(),
-                                )
-                                np.save(
-                                    os.path.join(
-                                        dump_path,
-                                        f"ypred_{dset_name}_{valid_or_test}_epoch{epoch}_rank{self.rank}_{j}.npy",
-                                    ),
-                                    y_pred.cpu().numpy(),
-                                )
-                                logger.info(f"Wrote out npy dumps to {dump_path}")
-                    # For most per-"epoch" validations, we only do a configurably short subset
-                    if not full and count >= self.short_validation_length:
-                        break
+                                    if not os.path.exists(dump_path):
+                                        os.makedirs(dump_path, exist_ok=True)
+                                    np.save(
+                                        os.path.join(
+                                            dump_path,
+                                            f"yref_{dset_name}_{valid_or_test}_epoch{epoch}_rank{self.rank}_{j}.npy",
+                                        ),
+                                        y_ref.cpu().numpy(),
+                                    )
+                                    np.save(
+                                        os.path.join(
+                                            dump_path,
+                                            f"ypred_{dset_name}_{valid_or_test}_epoch{epoch}_rank{self.rank}_{j}.npy",
+                                        ),
+                                        y_pred.cpu().numpy(),
+                                    )
+                                    logger.info(f"Wrote out npy dumps to {dump_path}")
+                        # For most per-"epoch" validations, we only do a configurably short subset
+                        if not full and count >= self.short_validation_length:
+                            break
                 # Run some last outputs on rank 0 do get a general sense of what's going on
                 if (
                     self.rank_in_sync_group == 0
@@ -902,6 +975,8 @@ class Trainer:
                                 )
             if dataset.full_trajectory_mode:
                 rank_time_logs[current_metadata.dataset_name] = dset_time_logs
+            if profile_val:
+                self._profiler_val_used = True
         # If we're distributed, now send all per rank results to rank 0 for aggregation
         if self.is_distributed:
             # Wait for all ranks to finish
@@ -1029,140 +1104,145 @@ class Trainer:
         else:
             grad_acc_steps = self.grad_acc_steps
 
-        while i < len(dataloader):
-            # If reuse batches is on, we want to cache grad_acc_steps worth of
-            # batches and reuse them. We want the order to be new -> cached -> new
-            # Current last batch will just be new.
-            if self.reuse_batches and (
-                len(overall_batch_queue) >= 2 * grad_acc_steps
-                or len(current_batch_queue) > 0
-            ):
-                # Reuse the batch
-                if len(current_batch_queue) == 0:
-                    # If grad acc > 1, shuffle so we have unique batches at least
-                    if grad_acc_steps > 1:
-                        shuffle(overall_batch_queue)
-                    current_batch_queue = overall_batch_queue[:grad_acc_steps]
-                    overall_batch_queue = overall_batch_queue[grad_acc_steps:]
-                batch = current_batch_queue.pop(0)
-            else:
-                try:
-                    batch = next(data_iter)
-                except StopIteration:
-                    break
-                if self.reuse_batches:
-                    overall_batch_queue.append(batch.copy())
-            batch["padded_field_mask"] = batch["padded_field_mask"].to(
-                self.device, non_blocking=True
-            )
-            # Update grad if we're not using distribution
-            update_grad = (i + 1) % grad_acc_steps == 0
-            with (
-                nullcontext()
-                if (update_grad or self.distribution_type == "local")
-                else self.model.no_sync()
-            ):
-                with torch.autocast(
-                    device_type=self.device.type,
-                    enabled=self.enable_amp,
-                    dtype=self.amp_type,
+        profile_train = self.profiler_enabled and epoch == self.start_epoch
+        profiler_ctx = self._build_profiler("train") if profile_train else nullcontext()
+        with profiler_ctx as prof:
+            while i < len(dataloader):
+                # If reuse batches is on, we want to cache grad_acc_steps worth of
+                # batches and reuse them. We want the order to be new -> cached -> new
+                # Current last batch will just be new.
+                if self.reuse_batches and (
+                    len(overall_batch_queue) >= 2 * grad_acc_steps
+                    or len(current_batch_queue) > 0
                 ):
-                    data_time = time.time() - batch_start
-                    current_metadata = batch["metadata"]
-                    dset_name = current_metadata.dataset_name
-                    y_pred, y_ref = self.rollout_model(
-                        self.model, batch, self.formatter_dict[dset_name]
-                    )
-                    # If T > self.minimum_context, then optimize only the predictions with the minimum context
-                    # By default this is just removing the zero-context prediction in causal mode.
-                    if y_pred.shape[1] > self.minimum_context:
-                        y_ref = y_ref[:, self.minimum_context :]
-                        y_pred = y_pred[:, self.minimum_context :]
-                    forward_time = time.time() - batch_start - data_time
-                    assert y_ref.shape == y_pred.shape, (
-                        f"Mismatching shapes between reference {y_ref.shape} and prediction {y_pred.shape}"
-                    )
-                    loss = (
-                        self.loss_multiplier
-                        * self.loss_fn(
-                            y_pred, y_ref, current_metadata, eps=self.model_epsilon
-                        ).mean()
-                        / grad_acc_steps
-                    )
-                    del y_pred, y_ref  # Let gc free up a little before the BW pass
-                # If not AMP, then grad scaler is no op
-                self.grad_scaler.scale(loss).backward()
-                backward_time = time.time() - batch_start - forward_time - data_time
-            # On update_grad steps, we actually perform the steps
-            if update_grad:
-                if self.clip_gradient > 0 or self.gradient_log_level > 0:
-                    self.grad_scaler.unscale_(self.optimizer)
-                if self.gradient_log_level == 1:
-                    if hasattr(self.model, "sharding_strategy"):
-                        last_grad_norm = get_grad_norm_fsdp(
-                            self.model,
-                            self.rank,
-                            self.world_size,
-                            self.model.sharding_strategy,
-                        )
-                    else:
-                        last_grad_norm = get_grad_norm_local(self.model)
-                        avg_grad_norm += last_grad_norm.detach() / (
-                            len(dataloader) / grad_acc_steps
-                        )
-                if self.clip_gradient > 0:
-                    if hasattr(self.model, "clip_grad_norm_"):
-                        self.model.clip_grad_norm_(
-                            self.clip_gradient,
-                            norm_type=2.0,
-                        )
-                    else:
-                        torch.nn.utils.clip_grad_norm_(
-                            self.model.parameters(), self.clip_gradient, norm_type=2.0
-                        )
-                self.grad_scaler.step(self.optimizer)
-                self.grad_scaler.update()
-                self.optimizer.zero_grad()  # Set to none is now default\
-                if self.lr_scheduler_per_step and self.lr_scheduler:
-                    self.lr_scheduler.step()
-            total_time = time.time() - batch_start
-            optimizer_time = total_time - forward_time - backward_time - data_time
-            # Syncing for all reduce anyway so may as well compute synchornous metrics
-            epoch_loss += (grad_acc_steps * loss.detach()) / len(
-                dataloader
-            )  # Unscale loss for accurate measure.
-
-            max_mem_GB = torch.cuda.max_memory_allocated() / 1024**3
-            if i % self.log_interval == 0:
-                timing = (time.time() - interval_start) / self.log_interval
-                interval_start = time.time()
-                logger.info(
-                    f"Epoch {epoch:>4}, Batch {i + 1}/{len(dataloader)}, Rank {self.rank:>3}, SyncStep: {update_grad}:\n\t Data: {current_metadata.dataset_name:<32}, loss {(grad_acc_steps * loss.item()) ** 0.5:7.4f}, mem {max_mem_GB:5.2f} GB, total_time {timing:5.3f}s, data {data_time:5.4f}s, fwd {forward_time:5.3f}s, bw {backward_time:5.3f}s, opt {optimizer_time:5.3f}s"
+                    # Reuse the batch
+                    if len(current_batch_queue) == 0:
+                        # If grad acc > 1, shuffle so we have unique batches at least
+                        if grad_acc_steps > 1:
+                            shuffle(overall_batch_queue)
+                        current_batch_queue = overall_batch_queue[:grad_acc_steps]
+                        overall_batch_queue = overall_batch_queue[grad_acc_steps:]
+                    batch = current_batch_queue.pop(0)
+                else:
+                    try:
+                        batch = next(data_iter)
+                    except StopIteration:
+                        break
+                    if self.reuse_batches:
+                        overall_batch_queue.append(batch.copy())
+                batch["padded_field_mask"] = batch["padded_field_mask"].to(
+                    self.device, non_blocking=True
                 )
-            # Log times and memory stats to wandb - I don't trust wandb numbers
-            if torch.cuda.is_available():
-                torch.cuda.reset_peak_memory_stats()
-            batch_start = time.time()
-            # Log elapsed times in train_log - NOTE: only accurate if cuda syncing, but can be interpretted either way
-            train_logs["avg_data_loading_time"] = train_logs.get(
-                "avg_data_loading_time", 0
-            ) + data_time / len(dataloader)
-            train_logs["avg_forward_time"] = train_logs.get(
-                "avg_forward_time", 0
-            ) + forward_time / len(dataloader)
-            train_logs["avg_backward_time"] = train_logs.get(
-                "avg_backward_time", 0
-            ) + backward_time / len(dataloader)
-            train_logs["avg_optimizer_time"] = train_logs.get(
-                "avg_optimizer_time", 0
-            ) + optimizer_time / len(dataloader)
-            train_logs["avg_time_per_step"] = train_logs.get(
-                "avg_time_per_step", 0
-            ) + total_time / len(dataloader)
-            train_logs["peak_memory"] = max(
-                train_logs.get("peak_memory", 0), max_mem_GB
-            )
-            i += 1
+                # Update grad if we're not using distribution
+                update_grad = (i + 1) % grad_acc_steps == 0
+                with (
+                    nullcontext()
+                    if (update_grad or self.distribution_type == "local")
+                    else self.model.no_sync()
+                ):
+                    with torch.autocast(
+                        device_type=self.device.type,
+                        enabled=self.enable_amp,
+                        dtype=self.amp_type,
+                    ):
+                        data_time = time.time() - batch_start
+                        current_metadata = batch["metadata"]
+                        dset_name = current_metadata.dataset_name
+                        y_pred, y_ref = self.rollout_model(
+                            self.model, batch, self.formatter_dict[dset_name]
+                        )
+                        # If T > self.minimum_context, then optimize only the predictions with the minimum context
+                        # By default this is just removing the zero-context prediction in causal mode.
+                        if y_pred.shape[1] > self.minimum_context:
+                            y_ref = y_ref[:, self.minimum_context :]
+                            y_pred = y_pred[:, self.minimum_context :]
+                        forward_time = time.time() - batch_start - data_time
+                        assert y_ref.shape == y_pred.shape, (
+                            f"Mismatching shapes between reference {y_ref.shape} and prediction {y_pred.shape}"
+                        )
+                        loss = (
+                            self.loss_multiplier
+                            * self.loss_fn(
+                                y_pred, y_ref, current_metadata, eps=self.model_epsilon
+                            ).mean()
+                            / grad_acc_steps
+                        )
+                        del y_pred, y_ref  # Let gc free up a little before the BW pass
+                    # If not AMP, then grad scaler is no op
+                    self.grad_scaler.scale(loss).backward()
+                    backward_time = time.time() - batch_start - forward_time - data_time
+                # On update_grad steps, we actually perform the steps
+                if update_grad:
+                    if self.clip_gradient > 0 or self.gradient_log_level > 0:
+                        self.grad_scaler.unscale_(self.optimizer)
+                    if self.gradient_log_level == 1:
+                        if hasattr(self.model, "sharding_strategy"):
+                            last_grad_norm = get_grad_norm_fsdp(
+                                self.model,
+                                self.rank,
+                                self.world_size,
+                                self.model.sharding_strategy,
+                            )
+                        else:
+                            last_grad_norm = get_grad_norm_local(self.model)
+                            avg_grad_norm += last_grad_norm.detach() / (
+                                len(dataloader) / grad_acc_steps
+                            )
+                    if self.clip_gradient > 0:
+                        if hasattr(self.model, "clip_grad_norm_"):
+                            self.model.clip_grad_norm_(
+                                self.clip_gradient,
+                                norm_type=2.0,
+                            )
+                        else:
+                            torch.nn.utils.clip_grad_norm_(
+                                self.model.parameters(), self.clip_gradient, norm_type=2.0
+                            )
+                    self.grad_scaler.step(self.optimizer)
+                    self.grad_scaler.update()
+                    self.optimizer.zero_grad()  # Set to none is now default\
+                    if self.lr_scheduler_per_step and self.lr_scheduler:
+                        self.lr_scheduler.step()
+                total_time = time.time() - batch_start
+                optimizer_time = total_time - forward_time - backward_time - data_time
+                # Syncing for all reduce anyway so may as well compute synchornous metrics
+                epoch_loss += (grad_acc_steps * loss.detach()) / len(
+                    dataloader
+                )  # Unscale loss for accurate measure.
+
+                max_mem_GB = torch.cuda.max_memory_allocated() / 1024**3
+                if i % self.log_interval == 0:
+                    timing = (time.time() - interval_start) / self.log_interval
+                    interval_start = time.time()
+                    logger.info(
+                        f"Epoch {epoch:>4}, Batch {i + 1}/{len(dataloader)}, Rank {self.rank:>3}, SyncStep: {update_grad}:\n\t Data: {current_metadata.dataset_name:<32}, loss {(grad_acc_steps * loss.item()) ** 0.5:7.4f}, mem {max_mem_GB:5.2f} GB, total_time {timing:5.3f}s, data {data_time:5.4f}s, fwd {forward_time:5.3f}s, bw {backward_time:5.3f}s, opt {optimizer_time:5.3f}s"
+                    )
+                # Log times and memory stats to wandb - I don't trust wandb numbers
+                if torch.cuda.is_available():
+                    torch.cuda.reset_peak_memory_stats()
+                batch_start = time.time()
+                # Log elapsed times in train_log - NOTE: only accurate if cuda syncing, but can be interpretted either way
+                train_logs["avg_data_loading_time"] = train_logs.get(
+                    "avg_data_loading_time", 0
+                ) + data_time / len(dataloader)
+                train_logs["avg_forward_time"] = train_logs.get(
+                    "avg_forward_time", 0
+                ) + forward_time / len(dataloader)
+                train_logs["avg_backward_time"] = train_logs.get(
+                    "avg_backward_time", 0
+                ) + backward_time / len(dataloader)
+                train_logs["avg_optimizer_time"] = train_logs.get(
+                    "avg_optimizer_time", 0
+                ) + optimizer_time / len(dataloader)
+                train_logs["avg_time_per_step"] = train_logs.get(
+                    "avg_time_per_step", 0
+                ) + total_time / len(dataloader)
+                train_logs["peak_memory"] = max(
+                    train_logs.get("peak_memory", 0), max_mem_GB
+                )
+                if prof is not None:
+                    prof.step()
+                i += 1
         train_logs["train_loss"] = epoch_loss
         if self.gradient_log_level >= 1:
             train_logs["avg_grad_norm"] = avg_grad_norm.item()
