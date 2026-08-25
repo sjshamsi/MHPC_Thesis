@@ -4,11 +4,11 @@ defaults:
 
 # Mirrors all_2_3d_leonardo.yaml's structure, but trimmed down to only the datasets
 # actually downloaded under well_base_path on this cluster
-# (/leonardo_scratch/fast/ICT26_MHPC/sshamsi/datasets/) as of 2026-07-26. Use this
+# (/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/) as of 2026-08-25. Use this
 # instead of all_2_3d_leonardo/smallset_leonardo for runs that should use every dataset
 # we currently have locally, rather than a subset or the full 18-dataset Well mixture
 # (most of which isn't downloaded here and would fail at data-loading time).
-well_base_path: /leonardo_scratch/fast/ICT26_MHPC/sshamsi/datasets/ # Usually overrided by server
+well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
 wandb_data_name: "well_available_leonardo"
 module_parameters:
   _target_: walrus.data.MixedWellDataModule

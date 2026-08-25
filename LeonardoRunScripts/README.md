@@ -27,14 +27,14 @@ ahead of the venv and silently shadows it otherwise.
    ```
    ./submit.sh smoke_test.sh
    ```
-   A checkpoint should appear under `/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/smoke_test/0/checkpoints/`.
+   A checkpoint should appear under `/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/smoke_test/0/checkpoints/`.
 
 2. **`gen_star_search_runs.py`** — generator for the real architecture star search. Vary one axis
    (`model.hidden_dim`, `model.processor_blocks`, `model.processor.space_mixing.mlp_dim`) at a
    time around a base anchor (edit the `base`/`options` dicts at the top of the file to change
-   the sweep), using `data=smallset_leonardo` (3 of the datasets actually downloaded on this
-   cluster's scratch — a lighter mixture than tier 3's `available_leonardo`, keeping each of the
-   many single-node jobs in this sweep cheap).
+   the sweep), using `data=smallset_leonardo` (3 of the datasets actually downloaded under this
+   cluster's `well_base_path` — a lighter mixture than tier 3's `available_leonardo`, keeping each
+   of the many single-node jobs in this sweep cheap).
    ```
    python gen_star_search_runs.py   # writes star_search_run_0.sh .. star_search_run_N.sh + run_star_search_all.sh
    bash run_star_search_all.sh      # submits every generated job
@@ -90,16 +90,48 @@ ahead of the venv and silently shadows it otherwise.
    ./submit.sh anchor_dimension_run.sh
    ```
 
+### Storage placement benchmark
+
+Before committing to a `well_base_path` for the real dataset copy, `storage_bench.sh` +
+`storage_bench_walrus.sh` empirically compare the four Leonardo storage candidates
+(`leonardo_work` vs. `leonardo_scratch/fast`, under either the `ICT26_MHPC_0` or `ICT26_MHPC`
+project) rather than guessing from filesystem specs alone.
+
+1. **`storage_bench.sh`** (+ `storage_bench_io.py`) - raw sequential write/read throughput plus
+   parallel random-window reads out of a real Well HDF5 file (mirroring how
+   `MixedWellDataModule`'s multi-worker `DataLoader` actually samples), run from a compute node
+   (not the login node) so the numbers reflect what a training job sees. Cheap: 1 GPU/8 CPUs,
+   `boost_qos_dbg`, no `--exclusive`. Bench files are deleted immediately after each phase.
+   ```
+   ./submit.sh storage_bench.sh
+   ```
+2. **`storage_bench_walrus.sh`** - the authoritative check: stages a small `active_matter` subset
+   (~1.5GB) under each of the four candidate paths in turn and runs the real `train.py` +
+   `model=debug` (hidden_dim=8, so GPU compute is negligible and any timing gap is attributable to
+   storage) for a few hundred steps each, back to back on the same GPU/node. Compare the per-batch
+   `data <x>s` timing that `Trainer.run_epoch` (`walrus/trainer/training.py`) logs per path - see
+   the script's header comment for the exact `grep`/`awk` to average it. Staged files are removed
+   at the end of each path's block.
+   ```
+   ./submit.sh storage_bench_walrus.sh
+   ```
+
+Both scripts hardcode `PATHS` arrays at the top - edit those (or comment one out) rather than
+templating a generator, since this is a one-off comparison, not a sweep. **As of 2026-08-24,
+`cinQuota` shows `/leonardo_scratch/fast/ICT26_MHPC_0` already over its 1T quota** (grace period) -
+check `cinQuota` before including that path, since these scripts still write (small, transient)
+files there.
+
 ### Logs, checkpoints, W&B
 
-Every script sets `++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs`, so each
+Every script sets `++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs`, so each
 run's `extended_config.yaml` snapshot and `checkpoints/` land under
 `logs/<name>/<auto-incrementing-run-idx>/`. Note `<name>` is auto-decorated by Walrus
 (`automatic_setup: True`) with model/optimizer descriptors, e.g. `name=smoke_test` becomes a
 folder like `smoke_test-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/`.
 
 `WANDB_MODE=offline` is set everywhere since Leonardo's compute nodes have no outbound internet,
-and `WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs` redirects wandb's local run
+and `WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs` redirects wandb's local run
 storage there too (its default is the current working directory, which would otherwise dump
 `wandb/offline-run-*/` folders into the repo checkout under your home directory).
 
@@ -232,7 +264,7 @@ run id; it prints the exact follow-up command to run from the login node afterwa
 those four runs so it doesn't also sweep in every other unsynced real run sitting in the same
 shared `WANDB_DIR`:
 ```
-cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all --append \
+cd /leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs && wandb sync --sync-all --append \
     --include-offline --include-globs="run-<run-id>.wandb"
 ```
 (`--sync-all` always scans `./wandb` relative to the current directory and ignores any path
@@ -254,15 +286,15 @@ This writes credentials to `~/.netrc`, used by both `wandb sync` and any future 
 
 **Syncing a run** afterward:
 ```
-wandb sync /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-<timestamp>-<id>
+wandb sync /leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/wandb/offline-run-<timestamp>-<id>
 # or sync every not-yet-synced run at once - note --sync-all always scans ./wandb relative to
 # the current directory and silently ignores any path argument, so cd there first:
-cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all
+cd /leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs && wandb sync --sync-all
 ```
 If a run was ever resumed (`auto_resume=True` picking up an existing `wandb_run_id.txt`, see
 above), add `--append` so the later offline directories attach to the same online run instead of
 each creating a separate one:
 ```
-cd /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all --append \
+cd /leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs && wandb sync --sync-all --append \
     --include-offline --include-globs="run-<run-id>.wandb"
 ```

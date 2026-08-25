@@ -10,8 +10,8 @@
 #SBATCH --cpus-per-gpu=8
 #SBATCH --mem=0
 #SBATCH --exclusive
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Baseline run at Walrus's *original*, unmodified paper-scale architecture
 # (hidden_dim=1408, processor_blocks=40, projection_dim=48, intermediate_dim=352,
@@ -31,7 +31,7 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
-export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 # `sbatch --export=ALL,AUTO_RESUME=False fullDims_FSDP_GC1.sh`) to force a
 # brand-new run_idx folder and a brand-new wandb run for a deliberate fresh
 # attempt under the same job name.
@@ -54,7 +54,7 @@ srun python -u `which torchrun` \
             distribution=fsdp \
             server=leonardo \
             data=available_leonardo \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_FSDP_GC1 \
             trainer=defaults \
             trainer.grad_acc_steps=4 \

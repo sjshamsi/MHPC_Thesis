@@ -14,7 +14,7 @@ import sys
 from the_well.data.utils import WELL_DATASETS
 from the_well.utils.download import well_download
 
-DEFAULT_BASE_PATH = "/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi"
+DEFAULT_BASE_PATH = "/leonardo_work/ICT26_MHPC_0/sshamsi"
 
 # The Well datasets actually used by Walrus's main training mixture
 # (walrus/configs/data/all_2_3d.yaml), i.e. everything except the

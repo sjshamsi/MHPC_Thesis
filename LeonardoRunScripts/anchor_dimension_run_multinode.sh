@@ -11,8 +11,8 @@
 #SBATCH --mem=0
 #SBATCH --exclusive
 #SBATCH --dependency=singleton
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Multi-node counterpart to anchor_dimension_run.sh: same sweep-anchor
 # architecture (hidden_dim=768, processor_blocks=12, mlp_dim=2048, ~203M
@@ -44,7 +44,7 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
-export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 # True (default) continues the latest run under this name - correct for
 # resubmitting after a timeout/crash. Set to False (e.g.
 # `sbatch --export=ALL,AUTO_RESUME=False anchor_dimension_run_multinode.sh`) to
@@ -66,7 +66,7 @@ srun python -u `which torchrun` \
     --rdzv_backend=c10d \
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \
         train.py distribution=ddp server=leonardo data=available_leonardo \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=anchor_hidden768_depth12_mlp2048_multinode trainer.grad_acc_steps=4 optimizer=adam optimizer.lr=0.0002 \
             logger.wandb_project_name="walrus_leonardo_scaling_multinode" \
             trainer.enable_amp=False model.gradient_checkpointing_freq=0 trainer.log_interval=100 trainer.clip_gradient=10 \

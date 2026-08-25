@@ -3,7 +3,7 @@ auto_resume: True # Automatically resume if default experiment_folder and checkp
 finetune: True # Treat existing path as pretrained model to finetune in new path
 folder_override: "" # Override the folder name for the experiment - considered "resume" if folder has chpts
 checkpoint_override: "" # Override search path for a resume checkpoint - considered "resume" if populated
-config_override: /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/checkpoints/walrus_pretrained/extended_config.yaml # Override the search path for a config file
+config_override: /leonardo_scratch/fast/ICT26_MHPC/sshamsi/walrus_pretrained/extended_config.yaml # Override the search path for a config file
 validation_mode: False
 frozen_components: # If resuming, these will be automatically imported from the checkpoint config. "all" means use exact settings.
   - model #

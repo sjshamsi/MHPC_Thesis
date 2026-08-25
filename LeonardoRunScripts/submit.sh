@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-LOGS_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+LOGS_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 
 script=""
 for arg in "$@"; do

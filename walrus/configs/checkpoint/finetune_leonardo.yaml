@@ -6,7 +6,7 @@ save_dir: checkpoints/${name}
 # In the backend, load_checkpoint_path is loaded by torch.distributed.checkpoint
 # so the checkpoint is created directly across ranks (checkpoints.py:190-246).
 load_checkpoint_path: null # <path>/checkpoints/sharded_checkpoint_dir/
-coalesced_checkpoint_path: /leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/checkpoints/walrus_pretrained/walrus.pt # Only specify load_checkpoint_path or coalesced_checkpoint_path - coalesced uses a single checkpoint assumed to be on CPU
+coalesced_checkpoint_path: /leonardo_scratch/fast/ICT26_MHPC/sshamsi/walrus_pretrained/walrus.pt # Only specify load_checkpoint_path or coalesced_checkpoint_path - coalesced uses a single checkpoint assumed to be on CPU
 save_best: True
 checkpoint_frequency: 20
 align_fields: True # Whether to align the fields in the checkpoint to the model, useful if there are new fields or the data is loaded in a different order

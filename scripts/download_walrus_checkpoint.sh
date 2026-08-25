@@ -3,7 +3,7 @@
 # Mirrors demo_notebooks/walrus_example_1_RunningWalrus.ipynb.
 set -euo pipefail
 
-BASE_PATH="${1:-/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/checkpoints/walrus_pretrained}"
+BASE_PATH="${1:-/leonardo_scratch/fast/ICT26_MHPC/sshamsi/walrus_pretrained}"
 
 mkdir -p "$BASE_PATH"
 

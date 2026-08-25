@@ -10,8 +10,8 @@
 #SBATCH --cpus-per-gpu=8
 #SBATCH --mem=0
 #SBATCH --exclusive
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Tiny/fast variant of halfDims_allDsets.sh for quick iteration on the debug queue - same
 # half-scale architecture (hidden_dim=1088, processor_blocks=30, mlp_dim=4352) and same
@@ -39,7 +39,7 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
-export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 # True (default) continues the latest run under this name - correct for resubmitting
 # after a timeout/crash. Set to False (e.g.
 # `./submit.sh --export=ALL,AUTO_RESUME=False halfDims_allDsets_tiny.sh`) to force a
@@ -64,7 +64,7 @@ srun python -u `which torchrun` \
             distribution=fsdp \
             server=leonardo \
             data=available_leonardo \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_allDsets_tiny \
             trainer=defaults \
             trainer.grad_acc_steps=4 \

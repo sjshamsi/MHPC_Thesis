@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-EXPERIMENT_DIR = "/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs"
+EXPERIMENT_DIR = "/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs"
 WALRUS_DIR = "/leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus"
 VENV_ACTIVATE = "/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate"
 WANDB_PROJECT = "walrus_leonardo_star_search"

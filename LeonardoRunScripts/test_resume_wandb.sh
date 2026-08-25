@@ -8,8 +8,8 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-node=1
 #SBATCH --cpus-per-gpu=8
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Regression test for checkpoint resume + W&B offline-run continuation (see
 # get_or_create_wandb_run_id in walrus/train.py and the "Resuming vs. starting
@@ -62,7 +62,7 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
-export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 
 module purge
 module load python
@@ -71,7 +71,7 @@ source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env1/bin/activate
 
 cd /leonardo/home/userexternal/sshamsi0/MHPC_Thesis/walrus
 
-EXPERIMENT_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+EXPERIMENT_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 TEST_LOG_DIR=$EXPERIMENT_DIR/test_resume_wandb
 mkdir -p "$TEST_LOG_DIR"
 

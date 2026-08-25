@@ -10,8 +10,8 @@
 #SBATCH --cpus-per-gpu=8
 #SBATCH --mem=0
 #SBATCH --exclusive
-#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.out
-#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs/slurm/%x/%j.err
+#SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
+#SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # lr_scheduler=inv_sqrt_w_sqrt_ramps_longer defaults to warmup_epochs=20/cooldown_epochs=10
 
@@ -65,7 +65,7 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export HYDRA_FULL_ERROR=1
 export NCCL_DEBUG=WARN
 export WANDB_MODE=offline
-export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs
+export WANDB_DIR=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs
 export AUTO_RESUME=${AUTO_RESUME:-True}
 
 module purge
@@ -129,6 +129,6 @@ srun python -u `which torchrun` \
             ++model.input_field_drop=0 \
             ++trainer.skip_spectral_metrics=True \
             finetuning_mods=all \
-            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC_0/sshamsi/logs \
+            ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             data/field_index_map_override=full_well_field_index \
             trainer.video_validation=False
