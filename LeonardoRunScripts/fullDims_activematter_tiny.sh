@@ -15,8 +15,8 @@
 
 # Same as fullDims_allDsets_tiny.sh (paper-scale architecture, shrunk
 # max_samples=50/max_epoch=6/lr_scheduler ramps=2+2 so a real train+valid+rollout-valid
-# cycle fits in the boost_qos_dbg 30-minute slot), but data=activematter_leonardo (just
-# active_matter) instead of data=available_leonardo (all 6 datasets). Already on
+# cycle fits in the boost_qos_dbg 30-minute slot), but data=Leonardo_active_matter (just
+# active_matter) instead of data=Leonardo_smallest7_2_3d (all 6 datasets). Already on
 # boost_qos_dbg/00:30:00, so no queue change was needed here - only the dataset swap.
 # With only one (lighter, 2D) dataset instead of six, this should run faster per epoch
 # than fullDims_allDsets_tiny.sh did, so max_epoch=6 may finish with room to spare -
@@ -53,7 +53,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_activematter_tiny \
             trainer=defaults \

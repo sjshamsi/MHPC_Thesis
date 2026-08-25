@@ -14,7 +14,7 @@
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Same as halfDims_activematter_tiny.sh (HalfWalrus sizing: hidden_dim=1088,
-# processor_blocks=30, mlp_dim=4352; data=activematter_leonardo; same tiny/debug-queue
+# processor_blocks=30, mlp_dim=4352; data=Leonardo_active_matter; same tiny/debug-queue
 # shrink pattern), but with trainer.video_validation=True to render rollout-validation
 # .mp4s, which needs ffmpeg on PATH (module purge drops it, so it's added back explicitly
 # below). Every ffmpeg this cluster provides via module/spack was built with
@@ -52,7 +52,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_activematter_tiny_video \
             trainer=defaults \

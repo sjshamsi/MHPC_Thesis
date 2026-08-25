@@ -15,8 +15,8 @@
 
 # Single-dataset counterpart to fullDims_allDsets.sh: same paper-scale architecture
 # (hidden_dim=1408, processor_blocks=40, projection_dim=48, intermediate_dim=352,
-# groups=16), but data=activematter_leonardo (just active_matter) instead of
-# data=available_leonardo (all 6 datasets), and on the boost_qos_dbg queue instead of
+# groups=16), but data=Leonardo_active_matter (just active_matter) instead of
+# data=Leonardo_smallest7_2_3d (all 6 datasets), and on the boost_qos_dbg queue instead of
 # normal. boost_qos_dbg caps wall time at 00:30:00 (sacctmgr show qos boost_qos_dbg),
 # so --time is forced down from 08:00:00 regardless.
 #
@@ -60,7 +60,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_activematter \
             trainer=defaults \

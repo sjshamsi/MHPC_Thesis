@@ -13,7 +13,7 @@
 #SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
-# Half-dimension counterpart to fullDims_activematter.sh: same data=activematter_leonardo
+# Half-dimension counterpart to fullDims_activematter.sh: same data=Leonardo_active_matter
 # (just active_matter) and same boost_qos_dbg/00:30:00 queue, but at roughly half the
 # paper-scale architecture - hidden_dim=1408->1088, processor_blocks=40->30, matching
 # halfDims_allDsets.sh's HalfWalrus sizing. projection_dim/intermediate_dim/groups/
@@ -59,7 +59,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_activematter \
             trainer=defaults \

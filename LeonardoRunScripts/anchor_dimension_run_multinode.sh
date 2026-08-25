@@ -16,7 +16,7 @@
 
 # Multi-node counterpart to anchor_dimension_run.sh: same sweep-anchor
 # architecture (hidden_dim=768, processor_blocks=12, mlp_dim=2048, ~203M
-# params) and data=available_leonardo, spread across --nodes=4 (16 GPUs)
+# params) and data=Leonardo_smallest7_2_3d, spread across --nodes=4 (16 GPUs)
 # instead of 1. distribution stays ddp (not hsdp) because at this model size
 # there's nothing worth sharding even within a single node - every GPU can
 # already hold the full model + optimizer state comfortably, so going
@@ -65,7 +65,7 @@ srun python -u `which torchrun` \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \
-        train.py distribution=ddp server=leonardo data=available_leonardo \
+        train.py distribution=ddp server=leonardo data=Leonardo_smallest7_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=anchor_hidden768_depth12_mlp2048_multinode trainer.grad_acc_steps=4 optimizer=adam optimizer.lr=0.0002 \
             logger.wandb_project_name="walrus_leonardo_scaling_multinode" \

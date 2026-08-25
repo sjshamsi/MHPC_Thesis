@@ -19,7 +19,7 @@
 # sweeping one axis at a time (see LeonardoRunScripts/README.md tier 2). That
 # anchor point itself is never generated as its own star_search_run_N.sh (the
 # options lists for hidden_dim/depth/mlp all deliberately exclude the anchor's
-# own value), so this materializes it - but trained on data=available_leonardo
+# own value), so this materializes it - but trained on data=Leonardo_smallest7_2_3d
 # (all 6 datasets we actually have downloaded) rather than the sweep's
 # data=smallset_leonardo (3 datasets), matching the same full-data intent as
 # full_dimension_run.sh.
@@ -59,7 +59,7 @@ srun python -u `which torchrun` \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \
-        train.py distribution=ddp server=leonardo data=available_leonardo \
+        train.py distribution=ddp server=leonardo data=Leonardo_smallest7_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=anchor_hidden768_depth12_mlp2048 trainer.grad_acc_steps=4 optimizer=adam optimizer.lr=0.0002 \
             logger.wandb_project_name="walrus_leonardo_scaling" \

@@ -15,7 +15,7 @@
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Half-dimension counterpart to fullDims_activematter_multinode.sh: same
-# data=activematter_leonardo, same --nodes=4/distribution=hsdp/local_size=4 split, and
+# data=Leonardo_active_matter, same --nodes=4/distribution=hsdp/local_size=4 split, and
 # same boost_qos_dbg/00:30:00 queue, but at HalfWalrus sizing - hidden_dim=1408->1088,
 # processor_blocks=40->30, model.processor.space_mixing.mlp_dim set explicitly to 4352
 # (= hidden_dim*4), matching halfDims_allDsets_multinode.sh. 4 nodes x 4 GPUs = 16 GPUs
@@ -59,7 +59,7 @@ srun python -u `which torchrun` \
             distribution=hsdp \
             distribution.local_size=4 \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_activematter_multinode \
             trainer=defaults \

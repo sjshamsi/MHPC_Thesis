@@ -30,7 +30,7 @@ import time
 import h5py
 import numpy as np
 
-# n_steps_input + n_steps_output from walrus/configs/data/available_leonardo.yaml
+# n_steps_input + n_steps_output from walrus/configs/data/Leonardo_smallest7_2_3d.yaml
 # (the real multi-dataset mixture) - the size of one training sample's time window.
 WINDOW = 11
 FIELDS = ["t0_fields/concentration", "t1_fields/velocity"]

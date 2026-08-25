@@ -15,7 +15,7 @@
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Multi-node counterpart to fullDims_allDsets.sh: same paper-scale architecture and
-# same data=available_leonardo (all 6 datasets), spread across --nodes=4 (16 GPUs)
+# same data=Leonardo_smallest7_2_3d (all 6 datasets), spread across --nodes=4 (16 GPUs)
 # instead of 1. --dependency=singleton guards against an overlapping resubmission
 # landing while a previous one is still running, matching
 # anchor_dimension_run_multinode.sh's precedent.
@@ -38,7 +38,7 @@
 # which truncates the whole train.py invocation at that point - see below, both now
 # properly continued.
 #
-# Everything else (model.* architecture, data=available_leonardo, max_samples=2000,
+# Everything else (model.* architecture, data=Leonardo_smallest7_2_3d, max_samples=2000,
 # max_epoch=71, gradient_checkpointing_freq=0, etc.) is unchanged from
 # fullDims_allDsets.sh on purpose. Note this does NOT make max_epoch=71 finish faster:
 # data.module_parameters.max_samples caps micro-batches *per rank*, so steps-per-epoch
@@ -80,7 +80,7 @@ srun python -u `which torchrun` \
             distribution=hsdp \
             distribution.local_size=4 \
             server=leonardo \
-            data=available_leonardo \
+            data=Leonardo_smallest7_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_allDsets_multinode \
             trainer=defaults \

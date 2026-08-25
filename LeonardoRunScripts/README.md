@@ -33,7 +33,7 @@ ahead of the venv and silently shadows it otherwise.
    (`model.hidden_dim`, `model.processor_blocks`, `model.processor.space_mixing.mlp_dim`) at a
    time around a base anchor (edit the `base`/`options` dicts at the top of the file to change
    the sweep), using `data=smallset_leonardo` (3 of the datasets actually downloaded under this
-   cluster's `well_base_path` — a lighter mixture than tier 3's `available_leonardo`, keeping each
+   cluster's `well_base_path` — a lighter mixture than tier 3's `Leonardo_smallest7_2_3d`, keeping each
    of the many single-node jobs in this sweep cheap).
    ```
    python gen_star_search_runs.py   # writes star_search_run_0.sh .. star_search_run_N.sh + run_star_search_all.sh
@@ -45,8 +45,8 @@ ahead of the venv and silently shadows it otherwise.
    against: Walrus's *original*, unmodified paper-scale architecture (`hidden_dim=1408`,
    `processor_blocks=40`, `projection_dim=48`, `intermediate_dim=352`, `groups=16` — copied
    verbatim from `../walrus/run_scripts/pretrain_example_distributed_walrus.sh`, not the smaller
-   anchor `gen_star_search_runs.py` sweeps around), trained on `data=available_leonardo` — a new data
-   config (`../walrus/configs/data/available_leonardo.yaml`) listing only the 6 datasets actually
+   anchor `gen_star_search_runs.py` sweeps around), trained on `data=Leonardo_smallest7_2_3d` — a new data
+   config (`../walrus/configs/data/Leonardo_smallest7_2_3d.yaml`) listing only the 6 datasets actually
    downloaded under `well_base_path` here (`active_matter`, `gray_scott_reaction_diffusion`,
    `helmholtz_staircase`, `turbulent_radiative_layer_2D`, `viscoelastic_instability`, `MHD_64`),
    as opposed to `all_2_3d_leonardo`'s full 18-dataset list (most of which isn't downloaded here
@@ -82,7 +82,7 @@ ahead of the venv and silently shadows it otherwise.
    (`hidden_dim=768`, `processor_blocks=12`, `mlp_dim=2048` — `gen_star_search_runs.py`'s `base` dict)
    instead of the paper-scale one. That anchor point is never generated as its own
    `star_search_run_N.sh` (the sweep's `options` lists all exclude the anchor's own value), so this
-   materializes it, trained on `data=available_leonardo` (all 6 datasets) rather than the sweep's
+   materializes it, trained on `data=Leonardo_smallest7_2_3d` (all 6 datasets) rather than the sweep's
    `data=smallset_leonardo` (3 datasets). At ~203M params (vs ~1.29B at paper scale) it needs
    none of tiers 3/4's FSDP/HSDP sharding — `distribution=ddp` and `gradient_checkpointing_freq=1`
    are enough, matching `gen_star_search_runs.py`'s own template.

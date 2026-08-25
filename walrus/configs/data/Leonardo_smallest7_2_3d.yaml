@@ -9,7 +9,7 @@ defaults:
 # we currently have locally, rather than a subset or the full 18-dataset Well mixture
 # (most of which isn't downloaded here and would fail at data-loading time).
 well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
-wandb_data_name: "well_available_leonardo"
+wandb_data_name: "well_Leonardo_smallest7_2_3d"
 module_parameters:
   _target_: walrus.data.MixedWellDataModule
   batch_size: 8

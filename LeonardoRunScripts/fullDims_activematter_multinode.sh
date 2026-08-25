@@ -16,7 +16,7 @@
 
 # Single-dataset counterpart to fullDims_allDsets_multinode.sh: same paper-scale
 # architecture and same --nodes=4/distribution=hsdp/local_size=4 split, but
-# data=activematter_leonardo (just active_matter) instead of data=available_leonardo
+# data=Leonardo_active_matter (just active_matter) instead of data=Leonardo_smallest7_2_3d
 # (all 6 datasets), and on boost_qos_dbg instead of normal. boost_qos_dbg caps wall time
 # at 00:30:00 (sacctmgr show qos boost_qos_dbg), so --time is forced down from 08:00:00
 # regardless. 4 nodes x 4 GPUs = 16 GPUs stays within boost_qos_dbg's
@@ -62,7 +62,7 @@ srun python -u `which torchrun` \
             distribution=hsdp \
             distribution.local_size=4 \
             server=leonardo \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_activematter_multinode \
             trainer=defaults \

@@ -50,7 +50,7 @@
 # to override the field to index mapping. Useful when loading an old checkpoint."
 # walrus/configs/data/field_index_map_override/full_well_field_index.yaml has a full
 # index assignment of all the ~40 fields throuhgout the datasets of Walrus.
-# walrus/configs/data/activematter_leonardo.yaml#L2 declares
+# walrus/configs/data/Leonardo_active_matter.yaml#L2 declares
 # field_index_map_override: bc_only_override. 
 # The model has one input and one output weight matrix with a fixed number of columns,
 # one for each of the ~40 Walrus fields. full_well_field_index means a new field to
@@ -119,7 +119,7 @@ srun python -u `which torchrun` \
             data.module_parameters.min_dt_stride=1 \
             data.module_parameters.max_dt_stride=1 \
             trainer.prediction_type="delta" \
-            data=activematter_leonardo \
+            data=Leonardo_active_matter \
             trainer.max_epoch=51 \
             data_workers=10 \
             model.override_dimensionality=0 \

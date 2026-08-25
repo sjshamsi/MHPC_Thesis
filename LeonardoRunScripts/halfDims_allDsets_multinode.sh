@@ -15,7 +15,7 @@
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Multi-node counterpart to halfDims_allDsets.sh: same half-scale architecture
-# (hidden_dim=1088, processor_blocks=30, mlp_dim=4352) and same data=available_leonardo
+# (hidden_dim=1088, processor_blocks=30, mlp_dim=4352) and same data=Leonardo_smallest7_2_3d
 # (all 6 datasets), spread across --nodes=4 (16 GPUs) instead of 1. --dependency=singleton
 # guards against an overlapping resubmission landing while a previous one is still running,
 # matching fullDims_allDsets_multinode.sh's precedent.
@@ -26,7 +26,7 @@
 # inter-node fabric instead of staying on fast intra-node NVLink/PCIe. HSDP shards only
 # within each node's 4 GPUs and replicates DDP-style across the 4 nodes.
 #
-# Everything else (data=available_leonardo, max_samples=2000, max_epoch=71,
+# Everything else (data=Leonardo_smallest7_2_3d, max_samples=2000, max_epoch=71,
 # gradient_checkpointing_freq, etc.) is unchanged from halfDims_allDsets.sh on purpose. Note
 # this does NOT make max_epoch=71 finish faster: data.module_parameters.max_samples caps
 # micro-batches *per rank*, so steps-per-epoch is fixed regardless of node count. More nodes
@@ -65,7 +65,7 @@ srun python -u `which torchrun` \
             distribution=hsdp \
             distribution.local_size=4 \
             server=leonardo \
-            data=available_leonardo \
+            data=Leonardo_smallest7_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_allDsets_multinode \
             trainer=defaults \
