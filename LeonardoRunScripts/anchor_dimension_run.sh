@@ -21,7 +21,7 @@
 # options lists for hidden_dim/depth/mlp all deliberately exclude the anchor's
 # own value), so this materializes it - but trained on data=Leonardo_smallest7_2_3d
 # (all 6 datasets we actually have downloaded) rather than the sweep's
-# data=smallset_leonardo (3 datasets), matching the same full-data intent as
+# data=Leonardo_smallest4_2d (3 datasets), matching the same full-data intent as
 # full_dimension_run.sh.
 #
 # At ~203M params (vs ~1.29B at paper scale - see

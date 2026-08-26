@@ -32,7 +32,7 @@ ahead of the venv and silently shadows it otherwise.
 2. **`gen_star_search_runs.py`** — generator for the real architecture star search. Vary one axis
    (`model.hidden_dim`, `model.processor_blocks`, `model.processor.space_mixing.mlp_dim`) at a
    time around a base anchor (edit the `base`/`options` dicts at the top of the file to change
-   the sweep), using `data=smallset_leonardo` (3 of the datasets actually downloaded under this
+   the sweep), using `data=Leonardo_smallest4_2d` (3 of the datasets actually downloaded under this
    cluster's `well_base_path` — a lighter mixture than tier 3's `Leonardo_smallest7_2_3d`, keeping each
    of the many single-node jobs in this sweep cheap).
    ```
@@ -50,7 +50,7 @@ ahead of the venv and silently shadows it otherwise.
    downloaded under `well_base_path` here (`active_matter`, `gray_scott_reaction_diffusion`,
    `helmholtz_staircase`, `turbulent_radiative_layer_2D`, `viscoelastic_instability`, `MHD_64`),
    as opposed to `Leonardo_smallest6_2d`'s full 18-dataset list (most of which isn't downloaded here
-   and would fail at data-loading time) or `smallset_leonardo`'s 3-dataset subset. Runs on 1 node
+   and would fail at data-loading time) or `Leonardo_smallest4_2d`'s 3-dataset subset. Runs on 1 node
    with `distribution=fsdp` — the original script used 24 nodes with `distribution=hsdp` and
    `local_size=4`, meaning parameters were only ever sharded within a single node's 4 GPUs and
    merely replicated data-parallel-style across nodes, so a single-node FSDP job gives each GPU
@@ -83,7 +83,7 @@ ahead of the venv and silently shadows it otherwise.
    instead of the paper-scale one. That anchor point is never generated as its own
    `star_search_run_N.sh` (the sweep's `options` lists all exclude the anchor's own value), so this
    materializes it, trained on `data=Leonardo_smallest7_2_3d` (all 6 datasets) rather than the sweep's
-   `data=smallset_leonardo` (3 datasets). At ~203M params (vs ~1.29B at paper scale) it needs
+   `data=Leonardo_smallest4_2d` (3 datasets). At ~203M params (vs ~1.29B at paper scale) it needs
    none of tiers 3/4's FSDP/HSDP sharding — `distribution=ddp` and `gradient_checkpointing_freq=1`
    are enough, matching `gen_star_search_runs.py`'s own template.
    ```
