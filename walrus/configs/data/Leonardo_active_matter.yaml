@@ -1,15 +1,7 @@
 defaults:
   - field_index_map_override: bc_only_override
-  - transform: random_rotation90_train
-
-# Mirrors Leonardo_smallest6_2d.yaml's structure, but trimmed down to only the datasets
-# actually downloaded under well_base_path on this cluster
-# (/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/) as of 2026-08-25. Use this
-# instead of Leonardo_smallest6_2d/Leonardo_smallest4_2d for runs that should use every dataset
-# we currently have locally, rather than a subset or the full 18-dataset Well mixture
-# (most of which isn't downloaded here and would fail at data-loading time).
 well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
-wandb_data_name: "well_Leonardo_smallest7_2_3d"
+wandb_data_name: "active_matter"
 module_parameters:
   _target_: walrus.data.MixedWellDataModule
   batch_size: 8
@@ -17,9 +9,9 @@ module_parameters:
   n_steps_output: 1
   min_dt_stride: 1
   max_dt_stride: 1
-  max_samples: 2000 # Time in fake epochs
+  max_samples: 2000
   well_dataset_info:
     active_matter:
       include_filters: []
       exclude_filters: []
-
+      

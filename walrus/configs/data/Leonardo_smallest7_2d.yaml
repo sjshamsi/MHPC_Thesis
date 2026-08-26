@@ -2,7 +2,7 @@ defaults:
   - field_index_map_override: bc_only_override
   - transform: random_rotation90_train
 well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/ # Usually overrided by server
-wandb_data_name: "well_smallest4_2d"
+wandb_data_name: "well_smallest7_2d"
 module_parameters:
   _target_: walrus.data.MixedWellDataModule
   batch_size: 8
@@ -13,6 +13,17 @@ module_parameters:
   max_samples: 2000 # Time in fake epochs
   well_dataset_info:
     active_matter:
+      include_filters: []
+      exclude_filters: []
+    planetswe:
+      include_filters: []
+      exclude_filters: []
+    acoustic_scattering_discontinuous:
+      include_filters: []
+      exclude_filters: []
+      field_transforms:
+        density: torch.zeros_like
+    gray_scott_reaction_diffusion:
       include_filters: []
       exclude_filters: []
     turbulent_radiative_layer_2D:

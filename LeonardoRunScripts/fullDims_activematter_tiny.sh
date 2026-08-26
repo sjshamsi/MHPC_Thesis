@@ -16,7 +16,7 @@
 # Same as fullDims_allDsets_tiny.sh (paper-scale architecture, shrunk
 # max_samples=50/max_epoch=6/lr_scheduler ramps=2+2 so a real train+valid+rollout-valid
 # cycle fits in the boost_qos_dbg 30-minute slot), but data=Leonardo_active_matter (just
-# active_matter) instead of data=Leonardo_smallest7_2_3d (all 6 datasets). Already on
+# active_matter) instead of data=Leonardo_smallest8_2_3d (all 6 datasets). Already on
 # boost_qos_dbg/00:30:00, so no queue change was needed here - only the dataset swap.
 # With only one (lighter, 2D) dataset instead of six, this should run faster per epoch
 # than fullDims_allDsets_tiny.sh did, so max_epoch=6 may finish with room to spare -

@@ -53,7 +53,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=Leonardo_smallest7_2_3d \
+            data=Leonardo_smallest8_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_FSDP_GC1 \
             trainer=defaults \

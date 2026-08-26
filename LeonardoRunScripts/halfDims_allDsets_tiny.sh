@@ -15,7 +15,7 @@
 
 # Tiny/fast variant of halfDims_allDsets.sh for quick iteration on the debug queue - same
 # half-scale architecture (hidden_dim=1088, processor_blocks=30, mlp_dim=4352) and same
-# data=Leonardo_smallest7_2_3d (all 6 datasets), just sized to run in minutes instead of hours.
+# data=Leonardo_smallest8_2_3d (all 6 datasets), just sized to run in minutes instead of hours.
 # Same shrink pattern as fullDims_allDsets_tiny.sh:
 #   - data.module_parameters.max_samples=50 (was 2000): sets wall-clock cost per epoch.
 #   - lr_scheduler.warmup_epochs=2 / cooldown_epochs=2 (group defaults are 10/10): a small
@@ -28,7 +28,7 @@
 #   - trainer.log_interval=10 (was 100): with max_samples=50, log_interval=100 would never
 #     fire.
 #
-# Everything else (data=Leonardo_smallest7_2_3d, gradient_checkpointing_freq, grad_acc_steps,
+# Everything else (data=Leonardo_smallest8_2_3d, gradient_checkpointing_freq, grad_acc_steps,
 # optimizer, checkpoint/experiment/finetuning_mods=defaults) is unchanged from
 # halfDims_allDsets.sh on purpose.
 
@@ -63,7 +63,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=Leonardo_smallest7_2_3d \
+            data=Leonardo_smallest8_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_allDsets_tiny \
             trainer=defaults \

@@ -88,7 +88,7 @@ srun python -u `which torchrun` \\
     --rdzv_id=$SLURM_JOB_ID \\
     --rdzv_backend=c10d \\
     --rdzv_endpoint=$SLURMD_NODENAME:29500 \\
-        train.py distribution=ddp server=leonardo data=Leonardo_smallest7_2_3d \\
+        train.py distribution=ddp server=leonardo data=Leonardo_smallest8_2_3d \\
             ++experiment_dir={experiment_dir} \\
             name={job_name} trainer.grad_acc_steps=4 optimizer=adam optimizer.lr={lr} \\
             logger.wandb_project_name="{wandb_project}" \\

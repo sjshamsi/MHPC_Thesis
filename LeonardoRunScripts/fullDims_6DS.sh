@@ -79,7 +79,7 @@ srun python -u `which torchrun` \
             data.module_parameters.min_dt_stride=1 \
             data.module_parameters.max_dt_stride=5 \
             trainer.prediction_type="delta" \
-            data=Leonardo_smallest7_2_3d \
+            data=Leonardo_smallest8_2_3d \
             trainer.max_epoch=71 \
             data_workers=10 \
             model.override_dimensionality=0 \

@@ -14,7 +14,7 @@
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
 # Tiny/fast variant of fullDims_allDsets.sh for quick iteration on the debug queue -
-# same paper-scale architecture and same data=Leonardo_smallest7_2_3d (all 6 datasets), so
+# same paper-scale architecture and same data=Leonardo_smallest8_2_3d (all 6 datasets), so
 # this is still a genuine test of that configuration, just sized to run in minutes
 # instead of hours. Two independent things had to shrink together, not just one:
 #   - data.module_parameters.max_samples=50 (was 2000): this is what sets wall-clock
@@ -36,7 +36,7 @@
 #   - trainer.log_interval=10 (was 100): with max_samples=50, a log_interval of 100
 #     would never fire.
 #
-# Everything else (model.* architecture, data=Leonardo_smallest7_2_3d,
+# Everything else (model.* architecture, data=Leonardo_smallest8_2_3d,
 # model.gradient_checkpointing_freq=0, grad_acc_steps, optimizer, checkpoint/experiment/
 # finetuning_mods=defaults) is unchanged from fullDims_allDsets.sh on purpose.
 #
@@ -82,7 +82,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=Leonardo_smallest7_2_3d \
+            data=Leonardo_smallest8_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=fullDims_allDsets_tiny \
             trainer=defaults \

@@ -13,7 +13,7 @@
 #SBATCH --output=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.out
 #SBATCH --error=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs/slurm/%x/%j.err
 
-# Half-dimension counterpart to fullDims_allDsets.sh: same data=Leonardo_smallest7_2_3d (all 6
+# Half-dimension counterpart to fullDims_allDsets.sh: same data=Leonardo_smallest8_2_3d (all 6
 # datasets) and same training recipe, but at roughly half the paper-scale architecture -
 # hidden_dim=1408->1088, processor_blocks=40->30. projection_dim/intermediate_dim/groups/
 # num_heads are unchanged (they're not "hidden_dim"-scaled the same way - intermediate_dim
@@ -54,7 +54,7 @@ srun python -u `which torchrun` \
         train.py \
             distribution=fsdp \
             server=leonardo \
-            data=Leonardo_smallest7_2_3d \
+            data=Leonardo_smallest8_2_3d \
             ++experiment_dir=/leonardo_scratch/fast/ICT26_MHPC/sshamsi/logs \
             name=halfDims_allDsets_BS1000 \
             trainer=defaults \
