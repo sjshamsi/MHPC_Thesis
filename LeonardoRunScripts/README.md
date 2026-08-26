@@ -49,7 +49,7 @@ ahead of the venv and silently shadows it otherwise.
    config (`../walrus/configs/data/Leonardo_smallest7_2_3d.yaml`) listing only the 6 datasets actually
    downloaded under `well_base_path` here (`active_matter`, `gray_scott_reaction_diffusion`,
    `helmholtz_staircase`, `turbulent_radiative_layer_2D`, `viscoelastic_instability`, `MHD_64`),
-   as opposed to `all_2_3d_leonardo`'s full 18-dataset list (most of which isn't downloaded here
+   as opposed to `Leonardo_smallest6_2d`'s full 18-dataset list (most of which isn't downloaded here
    and would fail at data-loading time) or `smallset_leonardo`'s 3-dataset subset. Runs on 1 node
    with `distribution=fsdp` — the original script used 24 nodes with `distribution=hsdp` and
    `local_size=4`, meaning parameters were only ever sharded within a single node's 4 GPUs and
