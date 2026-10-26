@@ -25,14 +25,14 @@ dependencies = [
     "torchvision==0.20.1",
     "torchaudio==2.5.1",
     "torchinfo>=1.8.0,<2",
-    "wandb>=0.17.9"
+    "wandb==0.28.0"
 ]
 
 
 [project.optional-dependencies]
 test = [
     "pytest",
-    "ruff",
+    "ruff==0.8.3",
     "isort[colors]>=5.13.2",
     "pytest-order>=1.3.0",
     "mypy>=1.13.0",
