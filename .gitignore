@@ -90,3 +90,6 @@ __pycache__
 # Ignore run generated output
 outputs/
 wandb/
+
+# Thus guy just shows up sowmtimes as a test artifact
+extended_config.yaml
