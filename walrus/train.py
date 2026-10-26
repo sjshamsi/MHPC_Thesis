@@ -31,6 +31,29 @@ from walrus.utils.experiment_utils import (
 logger = logging.getLogger("walrus")
 # logger.setLevel(level=logging.DEBUG)
 
+WANDB_RUN_ID_FILENAME = "wandb_run_id.txt"
+
+def get_or_create_wandb_run_id(experiment_folder: str) -> str:
+    """Return a stable W&B run id for this experiment folder, creating one if needed."""
+    run_id_file = pathlib.Path(experiment_folder) / WANDB_RUN_ID_FILENAME
+    content = run_id_file.read_text().strip() if run_id_file.is_file() else ""
+    if content:
+        return content
+    run_id = wandb.util.generate_id()
+    try:
+        # O_EXCL: if two processes race on a fresh folder, only one creates the file.
+        fd = os.open(run_id_file, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        content = run_id_file.read_text().strip()
+        if content:
+            return content
+        # File exists but is empty (e.g. a crash mid-write): claim it.
+        run_id_file.write_text(run_id)
+        return run_id
+    with os.fdopen(fd, "w") as f:
+        f.write(run_id)
+    return run_id
+
 # Retrieve configuration for hydra
 CONFIG_DIR = pathlib.Path(__file__).parent / "configs"
 CONFIG_NAME = "config"
@@ -360,12 +383,19 @@ def main(cfg: DictConfig):
         cfg.data.module_parameters.batch_size * world_size
     ) * cfg.trainer.grad_acc_steps
     if rank == 0 and cfg.logger.wandb:
+        wandb_init_kwargs = {}
+        if ( (cfg.automatic_setup) and (not cfg.validation_mode) ):
+            wandb_init_kwargs["id"] = get_or_create_wandb_run_id(experiment_folder=experiment_folder)
+            wandb_init_kwargs["resume"] = "allow"
+
         wandb.init(
             project=cfg.logger.wandb_project_name,
             group=f"{cfg.data.wandb_data_name}",
             config=config_for_wandb,
             name=experiment_name,
+            **wandb_init_kwargs
         )
+        
     train(
         cfg,
         experiment_name,

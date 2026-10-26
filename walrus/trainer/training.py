@@ -1211,7 +1211,7 @@ class Trainer:
             loss_dict |= {f"{valid_or_test}": val_loss, "epoch": epoch}
 
             if self.wandb_logging and self.rank == 0:
-                wandb.log(loss_dict)
+                wandb.log(loss_dict, step=epoch)
 
         # Rollout if frequency, last epoch, or if this is the test set
         if (
@@ -1236,7 +1236,7 @@ class Trainer:
                 "epoch": epoch,
             }
             if self.wandb_logging and self.rank == 0:
-                wandb.log(rollout_val_loss_dict)
+                wandb.log(rollout_val_loss_dict, step=epoch)
         return val_loss, rollout_val_loss
 
     def train(self):
@@ -1261,7 +1261,7 @@ class Trainer:
             )
             train_logs |= {"train": train_loss, "epoch": epoch}
             if self.wandb_logging and self.rank == 0:
-                wandb.log(train_logs)
+                wandb.log(train_logs, step=epoch)
             # Empty mem caches before val
             torch.cuda.empty_cache()
             gc.collect()
@@ -1291,6 +1291,10 @@ class Trainer:
                 checkpoint_future = self.save_model_if_necessary(
                     epoch, val_loss, last=(epoch == self.max_epoch)
                 )
+            
+        # If resumed from a checkpoint that already reached max_epoch, the loop never runs and epoch is still start_epoch (= max_epoch + 1). Clamp so the test results are logged at the last trained epoch.
+        epoch = min(epoch, self.max_epoch)
+
         # Do test validation
         test_dataloaders = self.datamodule.test_dataloaders(
             self.sync_group_size, rank=self.rank_in_sync_group, full=not self.debug_mode
