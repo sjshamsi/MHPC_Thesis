@@ -57,13 +57,18 @@ def save_metadata(
     epoch: Optional[int] = None,
     val_loss: Optional[float] = None,
     best_val_loss: Optional[float] = None,
+    extra: Optional[dict] = None,
 ):
     """Checkpoint information that do not require synchronization across GPUs,
     or which are already synchronized.
     To be used in combination of FSDP checkpointing strategy.
 
+    `extra` holds further already-synchronized state, e.g. the FLOP accountant's
+    run-long counters under "flop_accountant".
     """
     state_dict = {"epoch": epoch, "val_loss": val_loss, "best_val_loss": best_val_loss}
+    if extra:
+        state_dict.update(extra)
     torch.save(state_dict, checkpoint_dir / CHECKPOINT_METADATA_FILENAME)
 
 
@@ -165,6 +170,9 @@ class CheckPointLoader:
         logger.info(f"Source checkpoint path set to: {self.load_checkpoint_path}")
         self.rank = rank
         self._best_metrics: Optional[float] = None
+        # Full metadata dict of the checkpoint last loaded ({} if none), so callers can
+        # read entries beyond epoch/val_loss (e.g. "flop_accountant").
+        self.loaded_metadata: dict = {}
 
     def load(
         self,
@@ -249,6 +257,7 @@ class CheckPointLoader:
                 epoch = checkpoint_metadata.get("epoch", None)
                 val_loss = checkpoint_metadata.get("val_loss", None)
                 self._best_metrics = checkpoint_metadata.get("best_val_loss", None)
+                self.loaded_metadata = dict(checkpoint_metadata)
         return epoch, val_loss
 
     def save_if_necessary(
@@ -259,6 +268,7 @@ class CheckPointLoader:
         epoch: Optional[int] = None,
         force: bool = False,
         local: bool = False,
+        extra_metadata: Optional[dict] = None,
     ):
         pass
 
@@ -308,6 +318,7 @@ class CheckPointer(CheckPointLoader):
         epoch: Optional[int] = None,
         force: bool = False,
         local: bool = False,
+        extra_metadata: Optional[dict] = None,
     ) -> Optional[Future]:
         """Check if checkpoints must be saved.
         If so triggers the asynchronous writing of the file.
@@ -319,6 +330,7 @@ class CheckPointer(CheckPointLoader):
         optimizer: Optimizer state to save
         val_loss: Loss saved as checkpoint metadata and used to save best model
         epoch: Epoch saved as checkpoint metadata and used to save the model every n epochs
+        extra_metadata: Further already-synchronized state stored in metadata.pt
         force: Boolean flag to force saving the model, preempts saving every n epoch behavior
         """
         state_dict = {"app": AppState(model, optimizer)}
@@ -401,6 +413,7 @@ class CheckPointer(CheckPointLoader):
                             epoch=epoch,
                             val_loss=val_loss,
                             best_val_loss=self._best_metrics,
+                            extra=extra_metadata,
                         )
                     )
                 else:
@@ -409,6 +422,7 @@ class CheckPointer(CheckPointLoader):
                         epoch=epoch,
                         val_loss=val_loss,
                         best_val_loss=self._best_metrics,
+                        extra=extra_metadata,
                     )
             # Link the other checkpoints to the one that has been saved
             # Only to be performed once, hence on rank 0
