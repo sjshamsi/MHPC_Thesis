@@ -279,6 +279,7 @@ def train(
         else:
             step_mult_factor = 1
 
+        resumed_lrs = [group["lr"] for group in optimizer.param_groups]
         lr_scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = instantiate(
             cfg.lr_scheduler,
             optimizer=optimizer,
@@ -286,6 +287,10 @@ def train(
             step_mult_factor=step_mult_factor,
             last_epoch=max(-1, last_epoch - 1),
         )
+        if last_epoch > 0:
+            # On resume the checkpoint already holds this epoch's lr, but the scheduler's constructor steps once more. Schedulers that scale the current lr (InverseSqrtLinearRamps) would apply that step's factor twice, so put it back.
+            for group, lr in zip(optimizer.param_groups, resumed_lrs):
+                group["lr"] = lr
     else:
         logger.info("No learning rate scheduler")
         lr_scheduler = None
