@@ -1,0 +1,6642 @@
+{
+ "schema_version": 1,
+ "built_at": "2026-10-09T19:20:09",
+ "root": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets",
+ "git_sha": "5ec35c6",
+ "datasets": {
+  "MHD_64": {
+   "name": "MHD_64",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/MHD_64",
+   "n_spatial_dims": 3,
+   "grid_type": "cartesian",
+   "resolution": [
+    64,
+    64,
+    64
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "density"
+    ],
+    "1": [
+     "magnetic_field_x",
+     "magnetic_field_y",
+     "magnetic_field_z",
+     "velocity_x",
+     "velocity_y",
+     "velocity_z"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "magnetic_field_x",
+    "magnetic_field_y",
+    "magnetic_field_z",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 7,
+   "splits": {
+    "train": {
+     "n_files": 10,
+     "bytes": 60817790920,
+     "steps": [
+      {
+       "n_steps": 100,
+       "n_traj": 77
+      }
+     ],
+     "files": [
+      {
+       "name": "MHD_Ma_0.7_Ms_0.5.hdf5",
+       "n_traj": 5,
+       "n_steps": 100,
+       "bytes": 7969217656
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_0.7.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_1.5.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_2.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_7.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.5.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.7.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_2_Ms_1.5.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_2_Ms_2.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      },
+      {
+       "name": "MHD_Ma_2_Ms_7.hdf5",
+       "n_traj": 8,
+       "n_steps": 100,
+       "bytes": 5872063696
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 10,
+     "bytes": 7340412960,
+     "steps": [
+      {
+       "n_steps": 100,
+       "n_traj": 10
+      }
+     ],
+     "files": [
+      {
+       "name": "MHD_Ma_0.7_Ms_0.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_0.7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_1.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_2.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_1.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_2.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      }
+     ]
+    },
+    "test": {
+     "n_files": 10,
+     "bytes": 7340412960,
+     "steps": [
+      {
+       "n_steps": 100,
+       "n_traj": 10
+      }
+     ],
+     "files": [
+      {
+       "name": "MHD_Ma_0.7_Ms_0.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_0.7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_1.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_2.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_0.7_Ms_7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_0.7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_1.5.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_2.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      },
+      {
+       "name": "MHD_Ma_2_Ms_7.hdf5",
+       "n_traj": 1,
+       "n_steps": 100,
+       "bytes": 734041296
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    16,
+    16,
+    16
+   ]
+  },
+  "acoustic_scattering_discontinuous": {
+   "name": "acoustic_scattering_discontinuous",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/acoustic_scattering_discontinuous",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    256,
+    256
+   ],
+   "bcs": [
+    [
+     "wall",
+     "open"
+    ],
+    [
+     "wall",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {
+    "0": [
+     "density",
+     "speed_of_sound"
+    ]
+   },
+   "model_field_names": [
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "density",
+    "speed_of_sound"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 16,
+     "bytes": 129185128704,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 1600
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_0.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_1.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_10.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_11.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_12.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_13.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_14.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_15.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_2.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_3.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_4.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_5.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_6.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_7.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_8.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_9.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 2,
+     "bytes": 16148141088,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 200
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_16.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_17.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    },
+    "test": {
+     "n_files": 2,
+     "bytes": 16148141088,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 200
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_18.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_discontinuous_chunk_19.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    33,
+    1
+   ]
+  },
+  "acoustic_scattering_inclusions": {
+   "name": "acoustic_scattering_inclusions",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/acoustic_scattering_inclusions",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    256,
+    256
+   ],
+   "bcs": [
+    [
+     "wall",
+     "open"
+    ],
+    [
+     "wall",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {
+    "0": [
+     "density",
+     "speed_of_sound"
+    ]
+   },
+   "model_field_names": [
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "density",
+    "speed_of_sound"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 28,
+     "bytes": 242008664320,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 2798
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_inclusions_chunk_0.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_1.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_10.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_11.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_12.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_13.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_14.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_15.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_16.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_17.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_18.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_19.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_2.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_20.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_21.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_22.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_23.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_24.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_25.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_26.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_27.hdf5",
+       "n_traj": 99,
+       "n_steps": 102,
+       "bytes": 16041415088
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_3.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_4.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_5.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_6.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_7.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_8.hdf5",
+       "n_traj": 99,
+       "n_steps": 102,
+       "bytes": 16041415088
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_9.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 4,
+     "bytes": 32296282176,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 400
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_inclusions_chunk_32.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_33.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_34.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_35.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    },
+    "test": {
+     "n_files": 4,
+     "bytes": 32296282176,
+     "steps": [
+      {
+       "n_steps": 102,
+       "n_traj": 400
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_inclusions_chunk_36.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_37.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_38.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      },
+      {
+       "name": "acoustic_scattering_inclusions_chunk_39.hdf5",
+       "n_traj": 100,
+       "n_steps": 102,
+       "bytes": 8074070544
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    33,
+    1
+   ]
+  },
+  "acoustic_scattering_maze": {
+   "name": "acoustic_scattering_maze",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/acoustic_scattering_maze",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    256,
+    256
+   ],
+   "bcs": [
+    [
+     "wall",
+     "open"
+    ],
+    [
+     "wall",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {
+    "0": [
+     "density",
+     "speed_of_sound"
+    ]
+   },
+   "model_field_names": [
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "density",
+    "speed_of_sound"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 16,
+     "bytes": 255014281472,
+     "steps": [
+      {
+       "n_steps": 202,
+       "n_traj": 1600
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_maze_chunk_0.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_1.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_10.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_11.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_12.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_13.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_14.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_15.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_2.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_3.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_4.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_5.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_6.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_7.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_8.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_9.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 2,
+     "bytes": 31876785184,
+     "steps": [
+      {
+       "n_steps": 202,
+       "n_traj": 200
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_maze_chunk_16.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_17.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      }
+     ]
+    },
+    "test": {
+     "n_files": 2,
+     "bytes": 31876785184,
+     "steps": [
+      {
+       "n_steps": 202,
+       "n_traj": 200
+      }
+     ],
+     "files": [
+      {
+       "name": "acoustic_scattering_maze_chunk_18.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      },
+      {
+       "name": "acoustic_scattering_maze_chunk_19.hdf5",
+       "n_traj": 100,
+       "n_steps": 202,
+       "bytes": 15938392592
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    33,
+    1
+   ]
+  },
+  "active_matter": {
+   "name": "active_matter",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/active_matter",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    256,
+    256
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "concentration"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ],
+    "2": [
+     "D_xx",
+     "D_xy",
+     "D_yx",
+     "D_yy",
+     "E_xx",
+     "E_xy",
+     "E_yx",
+     "E_yy"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "concentration",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "D_xx",
+    "D_xy",
+    "D_xz",
+    "D_yx",
+    "D_yy",
+    "D_yz",
+    "D_zx",
+    "D_zy",
+    "D_zz",
+    "E_xx",
+    "E_xy",
+    "E_xz",
+    "E_yx",
+    "E_yy",
+    "E_yz",
+    "E_zx",
+    "E_zy",
+    "E_zz"
+   ],
+   "n_channels_in": 22,
+   "splits": {
+    "train": {
+     "n_files": 45,
+     "bytes": 40876007040,
+     "steps": [
+      {
+       "n_steps": 81,
+       "n_traj": 175
+      }
+     ],
+     "files": [
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-1.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-2.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-4.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-5.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-1.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-2.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-5.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-1.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-2.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-4.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-5.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-1.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-2.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-3.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-4.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-5.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-1.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-2.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-4.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-5.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-1.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-2.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-4.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-5.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-1.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-2.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-4.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-5.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-1.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-2.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-3.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-4.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-5.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-1.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-2.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-3.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-4.0.hdf5",
+       "n_traj": 4,
+       "n_steps": 81,
+       "bytes": 934307968
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-5.0.hdf5",
+       "n_traj": 5,
+       "n_steps": 81,
+       "bytes": 1167878272
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 16,
+     "bytes": 5606115328,
+     "steps": [
+      {
+       "n_steps": 81,
+       "n_traj": 24
+      }
+     ],
+     "files": [
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-4.0.hdf5",
+       "n_traj": 3,
+       "n_steps": 81,
+       "bytes": 700737664
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-1.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-5.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-1.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-1.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      }
+     ]
+    },
+    "test": {
+     "n_files": 21,
+     "bytes": 6073389696,
+     "steps": [
+      {
+       "n_steps": 81,
+       "n_traj": 26
+      }
+     ],
+     "files": [
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-1.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_1.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-1.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_11.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-1.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_13.0_alpha_-5.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_15.0_alpha_-5.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_17.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_3.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-3.0.hdf5",
+       "n_traj": 2,
+       "n_steps": 81,
+       "bytes": 467167360
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_5.0_alpha_-5.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-2.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_7.0_alpha_-5.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-3.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      },
+      {
+       "name": "active_matter_L_10.0_zeta_9.0_alpha_-4.0.hdf5",
+       "n_traj": 1,
+       "n_steps": 81,
+       "bytes": 233597056
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    32,
+    1
+   ]
+  },
+  "euler_multi_quadrants_openBC": {
+   "name": "euler_multi_quadrants_openBC",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/euler_multi_quadrants_openBC",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    512,
+    512
+   ],
+   "bcs": [
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN"
+   ],
+   "field_names": {
+    "0": [
+     "energy",
+     "density",
+     "pressure"
+    ],
+    "1": [
+     "momentum_x",
+     "momentum_y"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "energy",
+    "density",
+    "pressure",
+    "momentum_x",
+    "momentum_y",
+    "momentum_z"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 10,
+     "bytes": 2151855512992,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 4000
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 216434867344
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812383888
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 215500348560
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 215580957840
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 215781735568
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 216278768784
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 217808657552
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812383888
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 216011709584
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 214833699984
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 10,
+     "bytes": 271569288608,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 500
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27318213776
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27171544208
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26868882576
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27340094608
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27366423696
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27179515024
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26804034704
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27311463568
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27258436752
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26950679696
+      }
+     ]
+    },
+    "test": {
+     "n_files": 10,
+     "bytes": 271439904160,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 500
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27249163408
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27250220176
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27162868880
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27140226192
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27164548240
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27183701136
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27197824144
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27166358672
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 27047222416
+      },
+      {
+       "name": "euler_multi_quadrants_openBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26877770896
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    33,
+    1
+   ]
+  },
+  "euler_multi_quadrants_periodicBC": {
+   "name": "euler_multi_quadrants_periodicBC",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/euler_multi_quadrants_periodicBC",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    512,
+    512
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "energy",
+     "density",
+     "pressure"
+    ],
+    "1": [
+     "momentum_x",
+     "momentum_y"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "energy",
+    "density",
+    "pressure",
+    "momentum_x",
+    "momentum_y",
+    "momentum_z"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 10,
+     "bytes": 2118123779280,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 4000
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 400,
+       "n_steps": 101,
+       "bytes": 211812377928
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 10,
+     "bytes": 264765699000,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 500
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569928
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      }
+     ]
+    },
+    "test": {
+     "n_files": 10,
+     "bytes": 264765698720,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 500
+      }
+     ],
+     "files": [
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.13_C3H8_16.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.22_C2H6_15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.33_H2O_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.365_Dry_air_1000.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.3_CO2_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.404_H2_100_Dry_air_-15.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.453_H2_-76.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.4_Dry_air_20.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.597_H2_-181.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      },
+      {
+       "name": "euler_multi_quadrants_periodicBC_gamma_1.76_Ar_-180.hdf5",
+       "n_traj": 50,
+       "n_steps": 101,
+       "bytes": 26476569872
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    32,
+    1
+   ]
+  },
+  "gray_scott_reaction_diffusion": {
+   "name": "gray_scott_reaction_diffusion",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/gray_scott_reaction_diffusion",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    128,
+    128
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "A",
+     "B"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "A",
+    "B"
+   ],
+   "n_channels_in": 2,
+   "splits": {
+    "train": {
+     "n_files": 6,
+     "bytes": 125955133896,
+     "steps": [
+      {
+       "n_steps": 1001,
+       "n_traj": 960
+      }
+     ],
+     "files": [
+      {
+       "name": "gray_scott_reaction_diffusion_bubbles_F_0.098_k_0.057.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_gliders_F_0.014_k_0.054.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_maze_F_0.029_k_0.057.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spirals_F_0.018_k_0.051.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spots_F_0.03_k_0.062.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_worms_F_0.058_k_0.065.hdf5",
+       "n_traj": 160,
+       "n_steps": 1001,
+       "bytes": 20992522316
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 6,
+     "bytes": 15744553416,
+     "steps": [
+      {
+       "n_steps": 1001,
+       "n_traj": 120
+      }
+     ],
+     "files": [
+      {
+       "name": "gray_scott_reaction_diffusion_bubbles_F_0.098_k_0.057.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_gliders_F_0.014_k_0.054.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_maze_F_0.029_k_0.057.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spirals_F_0.018_k_0.051.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spots_F_0.03_k_0.062.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_worms_F_0.058_k_0.065.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      }
+     ]
+    },
+    "test": {
+     "n_files": 6,
+     "bytes": 15744553416,
+     "steps": [
+      {
+       "n_steps": 1001,
+       "n_traj": 120
+      }
+     ],
+     "files": [
+      {
+       "name": "gray_scott_reaction_diffusion_bubbles_F_0.098_k_0.057.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_gliders_F_0.014_k_0.054.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_maze_F_0.029_k_0.057.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spirals_F_0.018_k_0.051.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_spots_F_0.03_k_0.062.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      },
+      {
+       "name": "gray_scott_reaction_diffusion_worms_F_0.058_k_0.065.hdf5",
+       "n_traj": 20,
+       "n_steps": 1001,
+       "bytes": 2624092236
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    32,
+    1
+   ]
+  },
+  "helmholtz_staircase": {
+   "name": "helmholtz_staircase",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/helmholtz_staircase",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    1024,
+    256
+   ],
+   "bcs": [
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "pressure_re",
+     "pressure_im"
+    ]
+   },
+   "constant_field_names": {
+    "0": [
+     "mask"
+    ]
+   },
+   "model_field_names": [
+    "pressure_re",
+    "pressure_im",
+    "mask"
+   ],
+   "n_channels_in": 3,
+   "splits": {
+    "train": {
+     "n_files": 16,
+     "bytes": 43642285696,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 416
+      }
+     ],
+     "files": [
+      {
+       "name": "helmholtz_staircase_omega_006.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_02.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_04.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_06.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_08.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_09.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_11.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_13.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_15.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_17.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_18.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_20.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_21.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_23.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_24.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      },
+      {
+       "name": "helmholtz_staircase_omega_25.hdf5",
+       "n_traj": 26,
+       "n_steps": 50,
+       "bytes": 2727642856
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 16,
+     "bytes": 5054688896,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 48
+      }
+     ],
+     "files": [
+      {
+       "name": "helmholtz_staircase_omega_006.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_02.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_04.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_06.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_08.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_09.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_11.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_13.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_15.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_17.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_18.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_20.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_21.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_23.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_24.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_25.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      }
+     ]
+    },
+    "test": {
+     "n_files": 16,
+     "bytes": 5054688896,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 48
+      }
+     ],
+     "files": [
+      {
+       "name": "helmholtz_staircase_omega_006.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_02.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_04.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_06.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_08.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_09.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_11.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_13.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_15.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_17.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_18.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_20.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_21.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_23.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_24.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      },
+      {
+       "name": "helmholtz_staircase_omega_25.hdf5",
+       "n_traj": 3,
+       "n_steps": 50,
+       "bytes": 315918056
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    33,
+    1
+   ]
+  },
+  "planetswe": {
+   "name": "planetswe",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/planetswe",
+   "n_spatial_dims": 2,
+   "grid_type": "equiangular",
+   "resolution": [
+    256,
+    512
+   ],
+   "bcs": [
+    [
+     "open",
+     "open"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "height"
+    ],
+    "1": [
+     "velocity_theta",
+     "velocity_phi"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "height",
+    "velocity_theta",
+    "velocity_phi"
+   ],
+   "n_channels_in": 3,
+   "splits": {
+    "train": {
+     "n_files": 96,
+     "bytes": 152206004736,
+     "steps": [
+      {
+       "n_steps": 1008,
+       "n_traj": 96
+      }
+     ],
+     "files": [
+      {
+       "name": "planetswe_IC00_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC00_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC00_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC01_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC01_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC01_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC02_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC02_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC02_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC03_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC03_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC03_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC04_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC04_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC04_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC05_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC05_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC05_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC06_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC06_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC06_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC07_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC07_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC07_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC08_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC08_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC08_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC09_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC09_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC09_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC10_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC10_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC10_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC11_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC11_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC11_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC12_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC12_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC12_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC13_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC13_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC13_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC14_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC14_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC14_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC15_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC15_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC15_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC16_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC16_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC16_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC17_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC17_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC17_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC18_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC18_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC18_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC19_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC19_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC19_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC20_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC20_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC20_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC21_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC21_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC21_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC22_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC22_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC22_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC23_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC23_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC23_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC24_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC24_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC24_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC25_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC25_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC25_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC26_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC26_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC26_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC27_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC27_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC27_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC28_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC28_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC28_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC29_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC29_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC29_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC30_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC30_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC30_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC31_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC31_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC31_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 12,
+     "bytes": 19025750592,
+     "steps": [
+      {
+       "n_steps": 1008,
+       "n_traj": 12
+      }
+     ],
+     "files": [
+      {
+       "name": "planetswe_IC32_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC32_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC32_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC33_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC33_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC33_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC34_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC34_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC34_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC35_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC35_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC35_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      }
+     ]
+    },
+    "test": {
+     "n_files": 12,
+     "bytes": 19025750592,
+     "steps": [
+      {
+       "n_steps": 1008,
+       "n_traj": 12
+      }
+     ],
+     "files": [
+      {
+       "name": "planetswe_IC36_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC36_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC36_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC37_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC37_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC37_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC38_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC38_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC38_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC39_s1.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC39_s2.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      },
+      {
+       "name": "planetswe_IC39_s3.hdf5",
+       "n_traj": 1,
+       "n_steps": 1008,
+       "bytes": 1585479216
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    33,
+    32,
+    1
+   ]
+  },
+  "rayleigh_benard": {
+   "name": "rayleigh_benard",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/rayleigh_benard",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    512,
+    128
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "wall",
+     "wall"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "buoyancy",
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "buoyancy",
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 5,
+   "splits": {
+    "train": {
+     "n_files": 35,
+     "bytes": 293602128960,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 1400
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_10.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_10.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_10.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_10.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_10.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5e-1.hdf5",
+       "n_traj": 40,
+       "n_steps": 200,
+       "bytes": 8388632256
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 35,
+     "bytes": 36701008960,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 175
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      }
+     ]
+    },
+    "test": {
+     "n_files": 35,
+     "bytes": 36701008960,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 175
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e10_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e6_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e7_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e8_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_10.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_1e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_2e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      },
+      {
+       "name": "rayleigh_benard_Rayleigh_1e9_Prandtl_5e-1.hdf5",
+       "n_traj": 5,
+       "n_steps": 200,
+       "bytes": 1048600256
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    33,
+    1
+   ]
+  },
+  "rayleigh_taylor_instability": {
+   "name": "rayleigh_taylor_instability",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/rayleigh_taylor_instability",
+   "n_spatial_dims": 3,
+   "grid_type": "cartesian",
+   "resolution": [
+    128,
+    128,
+    128
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "wall",
+     "wall"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "density"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y",
+     "velocity_z"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 4,
+   "splits": {
+    "train": {
+     "n_files": 5,
+     "bytes": 179684108160,
+     "steps": [
+      {
+       "n_steps": 119,
+       "n_traj": 45
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_taylor_instability_At_0625.hdf5",
+       "n_traj": 9,
+       "n_steps": 119,
+       "bytes": 35936821632
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_125.hdf5",
+       "n_traj": 9,
+       "n_steps": 119,
+       "bytes": 35936821632
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_25.hdf5",
+       "n_traj": 9,
+       "n_steps": 119,
+       "bytes": 35936821632
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_50.hdf5",
+       "n_traj": 9,
+       "n_steps": 119,
+       "bytes": 35936821632
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_75.hdf5",
+       "n_traj": 9,
+       "n_steps": 119,
+       "bytes": 35936821632
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 5,
+     "bytes": 39929898880,
+     "steps": [
+      {
+       "n_steps": 119,
+       "n_traj": 10
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_taylor_instability_At_0625.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_125.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_25.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_50.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_75.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      }
+     ]
+    },
+    "test": {
+     "n_files": 5,
+     "bytes": 39929898880,
+     "steps": [
+      {
+       "n_steps": 119,
+       "n_traj": 10
+      }
+     ],
+     "files": [
+      {
+       "name": "rayleigh_taylor_instability_At_0625.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_125.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_25.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_50.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      },
+      {
+       "name": "rayleigh_taylor_instability_At_75.hdf5",
+       "n_traj": 2,
+       "n_steps": 119,
+       "bytes": 7985979776
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    16,
+    16,
+    17
+   ]
+  },
+  "shear_flow": {
+   "name": "shear_flow",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/shear_flow",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    256,
+    512
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "tracer",
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "tracer",
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 5,
+   "splits": {
+    "train": {
+     "n_files": 28,
+     "bytes": 469763900928,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 896
+      }
+     ],
+     "files": [
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e-1.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e0.hdf5",
+       "n_traj": 32,
+       "n_steps": 200,
+       "bytes": 16777282176
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 28,
+     "bytes": 58722108928,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 112
+      }
+     ],
+     "files": [
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      }
+     ]
+    },
+    "test": {
+     "n_files": 28,
+     "bytes": 58722108928,
+     "steps": [
+      {
+       "n_steps": 200,
+       "n_traj": 112
+      }
+     ],
+     "files": [
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e4_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_1e5_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e4_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_1e1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_2e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e-1.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      },
+      {
+       "name": "shear_flow_Reynolds_5e5_Schmidt_5e0.hdf5",
+       "n_traj": 4,
+       "n_steps": 200,
+       "bytes": 2097218176
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    32,
+    1
+   ]
+  },
+  "supernova_explosion_128": {
+   "name": "supernova_explosion",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/supernova_explosion_128",
+   "n_spatial_dims": 3,
+   "grid_type": "cartesian",
+   "resolution": [
+    128,
+    128,
+    128
+   ],
+   "bcs": [
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN"
+   ],
+   "field_names": {
+    "0": [
+     "density",
+     "pressure",
+     "temperature"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y",
+     "velocity_z"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "pressure",
+    "temperature",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 13,
+     "bytes": 617670339208,
+     "steps": [
+      {
+       "n_steps": 59,
+       "n_traj": 208
+      }
+     ],
+     "files": [
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_00.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_01.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_02.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_03.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_04.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_05.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_06.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_07.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_08.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_09.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_10.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_11.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_12.hdf5",
+       "n_traj": 16,
+       "n_steps": 59,
+       "bytes": 47513103016
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 13,
+     "bytes": 77209102984,
+     "steps": [
+      {
+       "n_steps": 59,
+       "n_traj": 26
+      }
+     ],
+     "files": [
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_00.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_01.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_02.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_03.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_04.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_05.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_06.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_07.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_08.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_09.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_10.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_11.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_12.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      }
+     ]
+    },
+    "test": {
+     "n_files": 13,
+     "bytes": 77209102984,
+     "steps": [
+      {
+       "n_steps": 59,
+       "n_traj": 26
+      }
+     ],
+     "files": [
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_00.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_01.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_02.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_03.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_04.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_05.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_06.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_07.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_08.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_09.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_10.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_11.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      },
+      {
+       "name": "supernova_explosion_Msun_0.1_dim128_file_12.hdf5",
+       "n_traj": 2,
+       "n_steps": 59,
+       "bytes": 5939161768
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    17,
+    17,
+    17
+   ]
+  },
+  "turbulence_gravity_cooling": {
+   "name": "turbulence_gravity_cooling",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/turbulence_gravity_cooling",
+   "n_spatial_dims": 3,
+   "grid_type": "cartesian",
+   "resolution": [
+    64,
+    64,
+    64
+   ],
+   "bcs": [
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN"
+   ],
+   "field_names": {
+    "0": [
+     "density",
+     "pressure",
+     "temperature"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y",
+     "velocity_z"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "pressure",
+    "temperature",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 6,
+   "splits": {
+    "train": {
+     "n_files": 27,
+     "bytes": 679477916520,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 2160
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_10.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_100.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_1000.hdf5",
+       "n_traj": 80,
+       "n_steps": 50,
+       "bytes": 25165848760
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 27,
+     "bytes": 84935324520,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 270
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      }
+     ]
+    },
+    "test": {
+     "n_files": 27,
+     "bytes": 84935324520,
+     "steps": [
+      {
+       "n_steps": 50,
+       "n_traj": 270
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_0.445_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_4.45_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0.1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_0_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_10.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_100.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      },
+      {
+       "name": "turbulence_gravity_cooling_rho0_44.5_Z_1_T0_1000.hdf5",
+       "n_traj": 10,
+       "n_steps": 50,
+       "bytes": 3145752760
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    17,
+    17,
+    17
+   ]
+  },
+  "turbulent_radiative_layer_2D": {
+   "name": "turbulent_radiative_layer_2D",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/turbulent_radiative_layer_2D",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    128,
+    384
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "density",
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 5,
+   "splits": {
+    "train": {
+     "n_files": 9,
+     "bytes": 5719203648,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 72
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 635467072
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 9,
+     "bytes": 715136832,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 9
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      }
+     ]
+    },
+    "test": {
+     "n_files": 9,
+     "bytes": 715136832,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 9
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 79459648
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    33,
+    1
+   ]
+  },
+  "turbulent_radiative_layer_3D": {
+   "name": "turbulent_radiative_layer_3D",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/turbulent_radiative_layer_3D",
+   "n_spatial_dims": 3,
+   "grid_type": "cartesian",
+   "resolution": [
+    128,
+    128,
+    256
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "open",
+     "open"
+    ]
+   ],
+   "bc_types": [
+    "OPEN",
+    "PERIODIC"
+   ],
+   "field_names": {
+    "0": [
+     "density",
+     "pressure"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y",
+     "velocity_z"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "density",
+    "pressure",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z"
+   ],
+   "n_channels_in": 5,
+   "splits": {
+    "train": {
+     "n_files": 9,
+     "bytes": 610019955936,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 72
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 8,
+       "n_steps": 101,
+       "bytes": 67779995104
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 9,
+     "bytes": 76252773600,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 9
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472530400
+      }
+     ]
+    },
+    "test": {
+     "n_files": 9,
+     "bytes": 76252828896,
+     "steps": [
+      {
+       "n_steps": 101,
+       "n_traj": 9
+      }
+     ],
+     "files": [
+      {
+       "name": "turbulent_radiative_layer_tcool_0.03.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.06.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.10.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.18.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.32.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_0.56.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.00.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_1.78.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      },
+      {
+       "name": "turbulent_radiative_layer_tcool_3.16.hdf5",
+       "n_traj": 1,
+       "n_steps": 101,
+       "bytes": 8472536544
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    16,
+    16,
+    17
+   ]
+  },
+  "viscoelastic_instability": {
+   "name": "viscoelastic_instability",
+   "path": "/leonardo_work/ICT26_MHPC_0/sshamsi/datasets/viscoelastic_instability",
+   "n_spatial_dims": 2,
+   "grid_type": "cartesian",
+   "resolution": [
+    512,
+    512
+   ],
+   "bcs": [
+    [
+     "periodic",
+     "periodic"
+    ],
+    [
+     "wall",
+     "wall"
+    ]
+   ],
+   "bc_types": [
+    "PERIODIC",
+    "WALL"
+   ],
+   "field_names": {
+    "0": [
+     "pressure",
+     "c_zz"
+    ],
+    "1": [
+     "velocity_x",
+     "velocity_y"
+    ],
+    "2": [
+     "C_xx",
+     "C_xy",
+     "C_yx",
+     "C_yy"
+    ]
+   },
+   "constant_field_names": {},
+   "model_field_names": [
+    "pressure",
+    "c_zz",
+    "velocity_x",
+    "velocity_y",
+    "velocity_z",
+    "C_xx",
+    "C_xy",
+    "C_xz",
+    "C_yx",
+    "C_yy",
+    "C_yz",
+    "C_zx",
+    "C_zy",
+    "C_zz"
+   ],
+   "n_channels_in": 14,
+   "splits": {
+    "train": {
+     "n_files": 7,
+     "bytes": 56203905360,
+     "steps": [
+      {
+       "n_steps": 20,
+       "n_traj": 152
+      },
+      {
+       "n_steps": 60,
+       "n_traj": 61
+      }
+     ],
+     "files": [
+      {
+       "name": "viscoelastic_instability_AH.hdf5",
+       "n_traj": 16,
+       "n_steps": 20,
+       "bytes": 2684387824
+      },
+      {
+       "name": "viscoelastic_instability_CAR.hdf5",
+       "n_traj": 33,
+       "n_steps": 60,
+       "bytes": 16609481176
+      },
+      {
+       "name": "viscoelastic_instability_EIT.hdf5",
+       "n_traj": 28,
+       "n_steps": 60,
+       "bytes": 14092897576
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_L.hdf5",
+       "n_traj": 35,
+       "n_steps": 20,
+       "bytes": 5872057016
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_SAR.hdf5",
+       "n_traj": 30,
+       "n_steps": 20,
+       "bytes": 5033195656
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_L.hdf5",
+       "n_traj": 31,
+       "n_steps": 20,
+       "bytes": 5200967896
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_SAR.hdf5",
+       "n_traj": 40,
+       "n_steps": 20,
+       "bytes": 6710918216
+      }
+     ]
+    },
+    "valid": {
+     "n_files": 7,
+     "bytes": 5704481960,
+     "steps": [
+      {
+       "n_steps": 20,
+       "n_traj": 16
+      },
+      {
+       "n_steps": 60,
+       "n_traj": 6
+      }
+     ],
+     "files": [
+      {
+       "name": "viscoelastic_instability_AH.hdf5",
+       "n_traj": 2,
+       "n_steps": 20,
+       "bytes": 335574344
+      },
+      {
+       "name": "viscoelastic_instability_CAR.hdf5",
+       "n_traj": 3,
+       "n_steps": 60,
+       "bytes": 1509986776
+      },
+      {
+       "name": "viscoelastic_instability_EIT.hdf5",
+       "n_traj": 3,
+       "n_steps": 60,
+       "bytes": 1509985576
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_L.hdf5",
+       "n_traj": 4,
+       "n_steps": 20,
+       "bytes": 671120056
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_SAR.hdf5",
+       "n_traj": 3,
+       "n_steps": 20,
+       "bytes": 503347336
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_L.hdf5",
+       "n_traj": 3,
+       "n_steps": 20,
+       "bytes": 503347416
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_SAR.hdf5",
+       "n_traj": 4,
+       "n_steps": 20,
+       "bytes": 671120456
+      }
+     ]
+    },
+    "test": {
+     "n_files": 7,
+     "bytes": 5704481960,
+     "steps": [
+      {
+       "n_steps": 20,
+       "n_traj": 16
+      },
+      {
+       "n_steps": 60,
+       "n_traj": 6
+      }
+     ],
+     "files": [
+      {
+       "name": "viscoelastic_instability_AH.hdf5",
+       "n_traj": 2,
+       "n_steps": 20,
+       "bytes": 335574344
+      },
+      {
+       "name": "viscoelastic_instability_CAR.hdf5",
+       "n_traj": 3,
+       "n_steps": 60,
+       "bytes": 1509986776
+      },
+      {
+       "name": "viscoelastic_instability_EIT.hdf5",
+       "n_traj": 3,
+       "n_steps": 60,
+       "bytes": 1509985576
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_L.hdf5",
+       "n_traj": 4,
+       "n_steps": 20,
+       "bytes": 671120056
+      },
+      {
+       "name": "viscoelastic_instability_transtochaos_EIT_SAR.hdf5",
+       "n_traj": 3,
+       "n_steps": 20,
+       "bytes": 503347336
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_L.hdf5",
+       "n_traj": 3,
+       "n_steps": 20,
+       "bytes": 503347416
+      },
+      {
+       "name": "viscoelastic_instability_transtononchaos_EIT_SAR.hdf5",
+       "n_traj": 4,
+       "n_steps": 20,
+       "bytes": 671120456
+      }
+     ]
+    }
+   },
+   "token_grid": [
+    32,
+    33,
+    1
+   ]
+  }
+ }
+}
