@@ -1,0 +1,54 @@
+# Hydra overrides shared by test_flops_fsdp.sh (training) and check_flops_fsdp.py (planner replay).
+# One per line; '#' lines ignored. Phase-specific keys (max_epoch, auto_resume, paths) live in the .sh.
+# PT9-like substrate: fsdp, Leonardo_pretrain9_2d, causal, one stem (override_dimensionality=3).
+distribution=fsdp
+model=isotropic_model
+trainer=defaults
+server=leonardo
+data=Leonardo_pretrain9_2d
+data/field_index_map_override=full_well_field_index
+optimizer=adam
+optimizer.lr=2.e-4
+trainer.enable_amp=False
+trainer.grad_acc_steps=4
+trainer.clip_gradient=10
+trainer.prediction_type=delta
+data.module_parameters.batch_size=2
+data.module_parameters.n_steps_input=6
+data.module_parameters.n_steps_output=1
+data.module_parameters.min_dt_stride=1
+data.module_parameters.max_dt_stride=5
+model.projection_dim=48
+model.intermediate_dim=352
+model.groups=16
+model.override_dimensionality=3
+model.drop_path=0.05
+model/processor/space_mixing=full_spatial_attention
+model.processor.space_mixing.num_heads=16
+model.processor.time_mixing.num_heads=16
+model.causal_in_time=True
+model.jitter_patches=True
+++model.use_periodic_fixed_jitter=True
+++model.input_field_drop=0.0
+lr_scheduler=inv_sqrt_w_sqrt_ramps
+trainer.video_validation=False
+++trainer.skip_spectral_metrics=True
+++trainer.debug_mode=True
+checkpoint=defaults
+experiment=defaults
+finetuning_mods=defaults
+# Tiny model with gradient checkpointing every 2nd block, so recompute is non-zero.
+model.hidden_dim=256
+model.processor_blocks=4
+model.processor.space_mixing.mlp_dim=512
+model.gradient_checkpointing_freq=2
+# Test settings: 40 micro-batches per GPU per epoch, checkpoint every epoch, minimal validation.
+name=fc_fsdp_test
+logger.wandb_project_name=flopcounter_test
+data.module_parameters.max_samples=40
+checkpoint.checkpoint_frequency=1
+trainer.val_frequency=1000
+trainer.rollout_val_frequency=1000
+trainer.short_validation_length=2
+trainer.max_rollout_steps=4
+data_workers=8
