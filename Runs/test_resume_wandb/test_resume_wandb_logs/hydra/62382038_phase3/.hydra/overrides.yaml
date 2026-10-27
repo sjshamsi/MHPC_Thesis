@@ -1,0 +1,15 @@
+- distribution=ddp
+- server=leonardo
+- data=debug
+- model=debug
+- trainer=debug
+- ++experiment_dir=/leonardo_work/ICT26_MHPC_0/sshamsi/logs
+- name=test_resume_wandb
+- logger.wandb_project_name=walrus_leonardo_test
+- data_workers=2
+- ++trainer.debug_mode=True
+- trainer.short_validation_length=2
+- trainer.max_rollout_steps=4
+- ++trainer.skip_spectral_metrics=True
+- auto_resume=True
+- trainer.max_epoch=3

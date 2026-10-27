@@ -1,0 +1,181 @@
+data_workers: 2
+name: test_resume_wandb
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 4
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: checkpoints/${name}
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs

@@ -1,0 +1,3107 @@
+
+=== Phase 1: fresh run, max_epoch=1 ===
+[2026-10-27 00:46:02,384][walrus.utils.experiment_utils][INFO] - No override experiment folder detected. Using default experiment folder /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+[2026-10-27 00:46:02,388][walrus][INFO] - Run experiment test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+[2026-10-27 00:46:02,396][walrus][INFO] - Configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 1
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+auto_resume: false
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id rtet0ktn.
+wandb: Tracking run with wandb version 0.28.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004602-rtet0ktn
+wandb: View this run in the terminal with `wandb leet`
+[2026-10-27 00:46:05,137][walrus][INFO] - Instantiate datamodule debug
+[2026-10-27 00:46:16,232][walrus.data.multidataset][WARNING] - Failed to load convective_envelope_rsg dataset
+[2026-10-27 00:46:20,090][walrus.data.multidataset][WARNING] - Failed to load MHD_256 dataset
+[2026-10-27 00:46:30,639][walrus.data.multidataset][WARNING] - Failed to load post_neutron_star_merger dataset
+[2026-10-27 00:46:34,079][walrus.data.multidataset][WARNING] - Failed to load rayleigh_benard_uniform dataset
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/the_well/data/datasets.py:552: UserWarning: This is shear_flow v1.0, in which about 80% of the validation and test trajectories are exact copies of training trajectories. Results on its validation and test sets are not reliable. Get the corrected v2.0 with `the-well-download --dataset shear_flow`, after deleting any local copy.
+  warnings.warn(
+[2026-10-27 00:46:38,857][walrus.data.multidataset][WARNING] - Failed to load supernova_explosion_64 dataset
+[2026-10-27 00:46:45,808][walrus.data.multidataset][WARNING] - Failed to load viscoelastic_instability_v2 dataset
+[2026-10-27 00:46:50,555][walrus][INFO] - Instantiate model walrus.models.IsotropicModel
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/models/temporal_blocks/axial_time_attention.py:38: FutureWarning: `nn.init.kaiming_uniform` is now deprecated in favor of `nn.init.kaiming_uniform_`.
+  init.kaiming_uniform(
+===========================================================================
+Layer (type:depth-idx)                             Param #
+===========================================================================
+IsotropicModel                                     1
+├─PatchJittererBoundaryPad: 1-1                    --
+├─ModuleDict: 1-2                                  --
+│    └─SpaceBagAdaptiveDVstrideEncoder: 2-1        --
+│    │    └─Conv3d: 3-1                            5,210,112
+│    │    └─RMSGroupNorm: 3-2                      192
+│    │    └─SiLU: 3-3                              --
+│    │    └─Conv3d: 3-4                            98,304
+│    │    └─RMSGroupNorm: 3-5                      8
+├─ModuleList: 1-3                                  --
+│    └─SpaceTimeSplitBlock: 2-2                    --
+│    │    └─FullAttention: 3-6                     --
+│    │    │    └─RMSGroupNorm: 4-1                 8
+│    │    │    └─Linear: 4-2                       504
+│    │    │    └─SwiGLU: 4-3                       --
+│    │    │    └─Linear: 4-4                       136
+│    │    │    └─Linear: 4-5                       64
+│    │    │    └─LayerNorm: 4-6                    8
+│    │    │    └─LayerNorm: 4-7                    8
+│    │    │    └─RotaryEmbedding: 4-8              --
+│    │    │    └─Identity: 4-9                     --
+│    │    └─AxialTimeAttention: 3-7                --
+│    │    │    └─RMSGroupNorm: 4-10                8
+│    │    │    └─Conv3d: 4-11                      216
+│    │    │    └─Conv3d: 4-12                      72
+│    │    │    └─LayerNorm: 4-13                   8
+│    │    │    └─LayerNorm: 4-14                   8
+│    │    │    └─RelativePositionBias: 4-15        --
+│    │    │    │    └─Embedding: 5-1               64
+│    │    │    └─Identity: 4-16                    --
+│    │    └─Identity: 3-8                          --
+├─ModuleDict: 1-4                                  --
+│    └─AdaptiveDVstrideDecoder: 2-3                --
+│    │    └─ConvTranspose3d: 3-9                   98,304
+│    │    └─RMSGroupNorm: 3-10                     192
+│    │    └─SiLU: 3-11                             --
+│    │    └─ConvTranspose3d: 3-12                  5,210,165
+===========================================================================
+Total params: 10,618,382
+Trainable params: 10,618,382
+Non-trainable params: 0
+===========================================================================
+[2026-10-27 00:46:57,636][walrus][INFO] - Assigning distribution strategy: ddp
+[2026-10-27 00:46:59,524][walrus][INFO] - Instantiate optimizer torch.optim.AdamW
+[2026-10-27 00:46:59,527][walrus][INFO] - Instantiate checkpointer walrus.trainer.checkpoints.CheckPointer
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/trainer/checkpoints.py:272: UserWarning: No last checkpoint found
+  warnings.warn("No last checkpoint found")
+[2026-10-27 00:46:59,531][walrus.trainer.checkpoints][INFO] - Source checkpoint path set to: None
+[2026-10-27 00:46:59,531][walrus.trainer.checkpoints][INFO] - Checkpointing to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+[2026-10-27 00:46:59,531][walrus][INFO] - Instantiate learning rate scheduler walrus.optim.schedulers.InverseSqrtLinearRamps
+[2026-10-27 00:46:59,546][walrus][INFO] - Final configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 1
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: false
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+[2026-10-27 00:46:59,546][walrus][INFO] - Instantiate trainer walrus.trainer.Trainer
+[2026-10-27 00:46:59,697][walrus.trainer.training][INFO] - Epoch 1/1: starting training
+[2026-10-27 00:47:29,789][walrus.trainer.training][INFO] - Epoch    1, Batch 1/8, Rank   0, SyncStep: False:
+	 Data: active_matter                   , loss  5.9247, mem  0.61 GB, total_time 3.007s, data 2.6753s, fwd 24.005s, bw 3.393s, opt 0.000s
+NCCL version 2.21.5+cuda12.4
+[2026-10-27 00:47:32,902][walrus.trainer.training][INFO] - Epoch 1/1: training loss 36.0134
+[2026-10-27 00:47:38,473][walrus.trainer.training][INFO] - Epoch 1/1: starting valid validation
+[2026-10-27 00:47:38,474][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:47:39,423][walrus.trainer.training][INFO] - valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.4799, mem  0.52 GB, total_time 0.094s, model 0.0284s
+[2026-10-27 00:47:39,462][walrus.trainer.training][INFO] - valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.3614, mem  0.59 GB, total_time 0.038s, model 0.0333s
+[2026-10-27 00:47:40,295][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:47:40,296][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:47:40,468][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/valid_loss_dict_epoch1_rank0.pkl
+[2026-10-27 00:47:40,499][walrus.trainer.training][INFO] - Epoch 1/1: valid loss 0.11992506682872772
+[2026-10-27 00:47:40,501][walrus.trainer.training][INFO] - Epoch 1/1: starting rollout valid validation
+[2026-10-27 00:47:40,501][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:47:42,831][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.9262, mem  1.09 GB, total_time 0.150s, model 0.1423s
+[2026-10-27 00:47:42,887][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.9409, mem  1.56 GB, total_time 0.054s, model 0.0448s
+[2026-10-27 00:47:43,233][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:47:43,234][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_1_rank0_rollout_valid
+[2026-10-27 00:47:43,547][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_time_logs_epoch1_rank0.pkl
+[2026-10-27 00:47:43,584][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_loss_dict_epoch1_rank0.pkl
+[2026-10-27 00:47:43,586][walrus.trainer.training][INFO] - Epoch 1/1: rollout valid loss 0.2832544445991516
+[2026-10-27 00:47:43,595][walrus.trainer.checkpoints][INFO] - Save checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_1
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:768: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:711: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:47:43,776][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/best to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_1
+[2026-10-27 00:47:43,777][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/last to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_1
+[2026-10-27 00:47:43,778][walrus.trainer.training][INFO] - Epoch 1/1: starting test validation
+[2026-10-27 00:47:43,779][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:47:44,853][walrus.trainer.training][INFO] - test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.3941, mem  0.62 GB, total_time 0.035s, model 0.0311s
+[2026-10-27 00:47:44,891][walrus.trainer.training][INFO] - test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.4630, mem  0.59 GB, total_time 0.036s, model 0.0309s
+[2026-10-27 00:47:45,657][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:47:45,658][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:47:45,676][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/test_loss_dict_epoch1_rank0.pkl
+[2026-10-27 00:47:45,678][walrus.trainer.training][INFO] - Epoch 1/1: test loss 0.13084840774536133
+[2026-10-27 00:47:45,680][walrus.trainer.training][INFO] - Epoch 1/1: starting rollout test validation
+[2026-10-27 00:47:45,680][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:47:47,426][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.7971, mem  1.09 GB, total_time 0.060s, model 0.0524s
+[2026-10-27 00:47:47,573][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.6905, mem  1.56 GB, total_time 0.054s, model 0.0445s
+[2026-10-27 00:47:48,335][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:47:48,336][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_1_rank0_rollout_test
+[2026-10-27 00:47:48,540][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_time_logs_epoch1_rank0.pkl
+[2026-10-27 00:47:48,576][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_loss_dict_epoch1_rank0.pkl
+[2026-10-27 00:47:48,578][walrus.trainer.training][INFO] - Epoch 1/1: rollout test loss 0.030498556792736053
+wandb: 
+wandb: Run history:
+wandb:     avg_backward_time ▁
+wandb: avg_data_loading_time ▁
+wandb:      avg_forward_time ▁
+wandb:    avg_optimizer_time ▁
+wandb:     avg_time_per_step ▁
+wandb:                 epoch ▁
+wandb:                    lr ▁
+wandb:            param_norm ▁
+wandb:           peak_memory ▁
+wandb:          rollout_test ▁
+wandb:                +1,733 ...
+wandb: 
+wandb: Run summary:
+wandb:     avg_backward_time 0.53818
+wandb: avg_data_loading_time 0.33472
+wandb:      avg_forward_time 3.02126
+wandb:    avg_optimizer_time 0.25185
+wandb:     avg_time_per_step 4.14601
+wandb:                 epoch 1
+wandb:                    lr 4e-05
+wandb:            param_norm 25.70859
+wandb:           peak_memory 0.73902
+wandb:          rollout_test 0.0305
+wandb:                +1,733 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004602-rtet0ktn
+wandb: Find logs at: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004602-rtet0ktn/logs
+[rank0]:[W1027 00:47:48.933696286 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+=== Phase 2: resume (simulated resubmission 1), max_epoch=2 ===
+[2026-10-27 00:48:07,098][walrus.utils.experiment_utils][INFO] - No override experiment folder detected. Using default experiment folder /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+[2026-10-27 00:48:07,127][walrus.utils.experiment_utils][INFO] - Combining current field_index_map_override with previous config.
+[2026-10-27 00:48:07,129][walrus][INFO] - Run experiment test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+[2026-10-27 00:48:07,139][walrus][INFO] - Configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 2
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id rtet0ktn.
+wandb: Tracking run with wandb version 0.28.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004807-rtet0ktn
+wandb: View this run in the terminal with `wandb leet`
+[2026-10-27 00:48:07,822][walrus][INFO] - Instantiate datamodule debug
+[2026-10-27 00:48:08,883][walrus.data.multidataset][WARNING] - Failed to load convective_envelope_rsg dataset
+[2026-10-27 00:48:09,310][walrus.data.multidataset][WARNING] - Failed to load MHD_256 dataset
+[2026-10-27 00:48:10,136][walrus.data.multidataset][WARNING] - Failed to load post_neutron_star_merger dataset
+[2026-10-27 00:48:10,417][walrus.data.multidataset][WARNING] - Failed to load rayleigh_benard_uniform dataset
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/the_well/data/datasets.py:552: UserWarning: This is shear_flow v1.0, in which about 80% of the validation and test trajectories are exact copies of training trajectories. Results on its validation and test sets are not reliable. Get the corrected v2.0 with `the-well-download --dataset shear_flow`, after deleting any local copy.
+  warnings.warn(
+[2026-10-27 00:48:10,762][walrus.data.multidataset][WARNING] - Failed to load supernova_explosion_64 dataset
+[2026-10-27 00:48:11,266][walrus.data.multidataset][WARNING] - Failed to load viscoelastic_instability_v2 dataset
+[2026-10-27 00:48:12,205][walrus][INFO] - Instantiate model walrus.models.IsotropicModel
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/models/temporal_blocks/axial_time_attention.py:38: FutureWarning: `nn.init.kaiming_uniform` is now deprecated in favor of `nn.init.kaiming_uniform_`.
+  init.kaiming_uniform(
+===========================================================================
+Layer (type:depth-idx)                             Param #
+===========================================================================
+IsotropicModel                                     1
+├─PatchJittererBoundaryPad: 1-1                    --
+├─ModuleDict: 1-2                                  --
+│    └─SpaceBagAdaptiveDVstrideEncoder: 2-1        --
+│    │    └─Conv3d: 3-1                            5,210,112
+│    │    └─RMSGroupNorm: 3-2                      192
+│    │    └─SiLU: 3-3                              --
+│    │    └─Conv3d: 3-4                            98,304
+│    │    └─RMSGroupNorm: 3-5                      8
+├─ModuleList: 1-3                                  --
+│    └─SpaceTimeSplitBlock: 2-2                    --
+│    │    └─FullAttention: 3-6                     --
+│    │    │    └─RMSGroupNorm: 4-1                 8
+│    │    │    └─Linear: 4-2                       504
+│    │    │    └─SwiGLU: 4-3                       --
+│    │    │    └─Linear: 4-4                       136
+│    │    │    └─Linear: 4-5                       64
+│    │    │    └─LayerNorm: 4-6                    8
+│    │    │    └─LayerNorm: 4-7                    8
+│    │    │    └─RotaryEmbedding: 4-8              --
+│    │    │    └─Identity: 4-9                     --
+│    │    └─AxialTimeAttention: 3-7                --
+│    │    │    └─RMSGroupNorm: 4-10                8
+│    │    │    └─Conv3d: 4-11                      216
+│    │    │    └─Conv3d: 4-12                      72
+│    │    │    └─LayerNorm: 4-13                   8
+│    │    │    └─LayerNorm: 4-14                   8
+│    │    │    └─RelativePositionBias: 4-15        --
+│    │    │    │    └─Embedding: 5-1               64
+│    │    │    └─Identity: 4-16                    --
+│    │    └─Identity: 3-8                          --
+├─ModuleDict: 1-4                                  --
+│    └─AdaptiveDVstrideDecoder: 2-3                --
+│    │    └─ConvTranspose3d: 3-9                   98,304
+│    │    └─RMSGroupNorm: 3-10                     192
+│    │    └─SiLU: 3-11                             --
+│    │    └─ConvTranspose3d: 3-12                  5,210,165
+===========================================================================
+Total params: 10,618,382
+Trainable params: 10,618,382
+Non-trainable params: 0
+===========================================================================
+[2026-10-27 00:48:13,193][walrus][INFO] - Assigning distribution strategy: ddp
+[2026-10-27 00:48:13,295][walrus][INFO] - Instantiate optimizer torch.optim.AdamW
+[2026-10-27 00:48:13,298][walrus][INFO] - Instantiate checkpointer walrus.trainer.checkpoints.CheckPointer
+[2026-10-27 00:48:13,300][walrus.trainer.checkpoints][INFO] - Source checkpoint path set to: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_1
+[2026-10-27 00:48:13,301][walrus.trainer.checkpoints][INFO] - Checkpointing to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+[2026-10-27 00:48:13,301][walrus][INFO] - Resume from checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_1
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/trainer/checkpoints.py:198: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:822: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:859: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:48:13,400][walrus][INFO] - Resume from epoch 1 with validation loss 0.11992506682872772
+[2026-10-27 00:48:13,400][walrus][INFO] - Instantiate learning rate scheduler walrus.optim.schedulers.InverseSqrtLinearRamps
+[2026-10-27 00:48:13,415][walrus][INFO] - Final configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 2
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+[2026-10-27 00:48:13,415][walrus][INFO] - Instantiate trainer walrus.trainer.Trainer
+[2026-10-27 00:48:13,566][walrus.trainer.training][INFO] - Epoch 2/2: starting training
+[2026-10-27 00:48:15,502][walrus.trainer.training][INFO] - Epoch    2, Batch 1/8, Rank   0, SyncStep: False:
+	 Data: active_matter                   , loss  5.6990, mem  0.69 GB, total_time 0.193s, data 1.0769s, fwd 0.776s, bw 0.080s, opt 0.000s
+NCCL version 2.21.5+cuda12.4
+[2026-10-27 00:48:17,042][walrus.trainer.training][INFO] - Epoch 2/2: training loss 34.4747
+[2026-10-27 00:48:17,556][walrus.trainer.training][INFO] - Epoch 2/2: starting valid validation
+[2026-10-27 00:48:17,557][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:48:17,946][walrus.trainer.training][INFO] - valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.4792, mem  0.52 GB, total_time 0.053s, model 0.0476s
+[2026-10-27 00:48:17,988][walrus.trainer.training][INFO] - valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.3609, mem  0.59 GB, total_time 0.040s, model 0.0352s
+[2026-10-27 00:48:18,107][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:18,107][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:48:18,126][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/valid_loss_dict_epoch2_rank0.pkl
+[2026-10-27 00:48:18,128][walrus.trainer.training][INFO] - Epoch 2/2: valid loss 0.11971502006053925
+[2026-10-27 00:48:18,130][walrus.trainer.training][INFO] - Epoch 2/2: starting rollout valid validation
+[2026-10-27 00:48:18,131][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:48:20,131][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.9263, mem  1.09 GB, total_time 0.062s, model 0.0537s
+[2026-10-27 00:48:20,188][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.9414, mem  1.56 GB, total_time 0.055s, model 0.0453s
+[2026-10-27 00:48:20,428][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:20,429][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_2_rank0_rollout_valid
+[2026-10-27 00:48:20,613][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_time_logs_epoch2_rank0.pkl
+[2026-10-27 00:48:20,650][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_loss_dict_epoch2_rank0.pkl
+[2026-10-27 00:48:20,652][walrus.trainer.training][INFO] - Epoch 2/2: rollout valid loss 0.28337547183036804
+[2026-10-27 00:48:20,662][walrus.trainer.checkpoints][INFO] - Save checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_2
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:768: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:711: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:48:20,799][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/best to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_2
+[2026-10-27 00:48:20,800][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/last to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_2
+[2026-10-27 00:48:20,801][walrus.trainer.training][INFO] - Epoch 2/2: starting test validation
+[2026-10-27 00:48:20,802][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:48:21,219][walrus.trainer.training][INFO] - test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.3934, mem  0.62 GB, total_time 0.052s, model 0.0475s
+[2026-10-27 00:48:21,261][walrus.trainer.training][INFO] - test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.4619, mem  0.59 GB, total_time 0.040s, model 0.0348s
+[2026-10-27 00:48:21,381][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:21,382][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:48:21,400][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/test_loss_dict_epoch2_rank0.pkl
+[2026-10-27 00:48:21,404][walrus.trainer.training][INFO] - Epoch 2/2: test loss 0.13058921694755554
+[2026-10-27 00:48:21,406][walrus.trainer.training][INFO] - Epoch 2/2: starting rollout test validation
+[2026-10-27 00:48:21,406][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:48:22,945][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.7974, mem  1.09 GB, total_time 0.062s, model 0.0536s
+[2026-10-27 00:48:23,093][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.6908, mem  1.56 GB, total_time 0.054s, model 0.0448s
+[2026-10-27 00:48:23,602][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:23,603][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_2_rank0_rollout_test
+[2026-10-27 00:48:23,786][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_time_logs_epoch2_rank0.pkl
+[2026-10-27 00:48:23,822][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_loss_dict_epoch2_rank0.pkl
+[2026-10-27 00:48:23,824][walrus.trainer.training][INFO] - Epoch 2/2: rollout test loss 0.030505184084177017
+wandb: 
+wandb: Run history:
+wandb:     avg_backward_time ▁
+wandb: avg_data_loading_time ▁
+wandb:      avg_forward_time ▁
+wandb:    avg_optimizer_time ▁
+wandb:     avg_time_per_step ▁
+wandb:                 epoch ▁
+wandb:                    lr ▁
+wandb:            param_norm ▁
+wandb:           peak_memory ▁
+wandb:          rollout_test ▁
+wandb:                +1,733 ...
+wandb: 
+wandb: Run summary:
+wandb:     avg_backward_time 0.04317
+wandb: avg_data_loading_time 0.2572
+wandb:      avg_forward_time 0.12279
+wandb:    avg_optimizer_time 0.0083
+wandb:     avg_time_per_step 0.43145
+wandb:                 epoch 2
+wandb:                    lr 0.00011
+wandb:            param_norm 25.70845
+wandb:           peak_memory 0.73872
+wandb:          rollout_test 0.03051
+wandb:                +1,733 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004807-rtet0ktn
+wandb: Find logs at: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004807-rtet0ktn/logs
+[rank0]:[W1027 00:48:24.192153975 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+=== Phase 3: resume (simulated resubmission 2), max_epoch=3 ===
+[2026-10-27 00:48:34,160][walrus.utils.experiment_utils][INFO] - No override experiment folder detected. Using default experiment folder /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+[2026-10-27 00:48:34,189][walrus.utils.experiment_utils][INFO] - Combining current field_index_map_override with previous config.
+[2026-10-27 00:48:34,192][walrus][INFO] - Run experiment test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+[2026-10-27 00:48:34,201][walrus][INFO] - Configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 3
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id rtet0ktn.
+wandb: Tracking run with wandb version 0.28.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004834-rtet0ktn
+wandb: View this run in the terminal with `wandb leet`
+[2026-10-27 00:48:34,846][walrus][INFO] - Instantiate datamodule debug
+[2026-10-27 00:48:35,662][walrus.data.multidataset][WARNING] - Failed to load convective_envelope_rsg dataset
+[2026-10-27 00:48:35,969][walrus.data.multidataset][WARNING] - Failed to load MHD_256 dataset
+[2026-10-27 00:48:36,476][walrus.data.multidataset][WARNING] - Failed to load post_neutron_star_merger dataset
+[2026-10-27 00:48:36,656][walrus.data.multidataset][WARNING] - Failed to load rayleigh_benard_uniform dataset
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/the_well/data/datasets.py:552: UserWarning: This is shear_flow v1.0, in which about 80% of the validation and test trajectories are exact copies of training trajectories. Results on its validation and test sets are not reliable. Get the corrected v2.0 with `the-well-download --dataset shear_flow`, after deleting any local copy.
+  warnings.warn(
+[2026-10-27 00:48:36,968][walrus.data.multidataset][WARNING] - Failed to load supernova_explosion_64 dataset
+[2026-10-27 00:48:37,390][walrus.data.multidataset][WARNING] - Failed to load viscoelastic_instability_v2 dataset
+[2026-10-27 00:48:38,190][walrus][INFO] - Instantiate model walrus.models.IsotropicModel
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/models/temporal_blocks/axial_time_attention.py:38: FutureWarning: `nn.init.kaiming_uniform` is now deprecated in favor of `nn.init.kaiming_uniform_`.
+  init.kaiming_uniform(
+===========================================================================
+Layer (type:depth-idx)                             Param #
+===========================================================================
+IsotropicModel                                     1
+├─PatchJittererBoundaryPad: 1-1                    --
+├─ModuleDict: 1-2                                  --
+│    └─SpaceBagAdaptiveDVstrideEncoder: 2-1        --
+│    │    └─Conv3d: 3-1                            5,210,112
+│    │    └─RMSGroupNorm: 3-2                      192
+│    │    └─SiLU: 3-3                              --
+│    │    └─Conv3d: 3-4                            98,304
+│    │    └─RMSGroupNorm: 3-5                      8
+├─ModuleList: 1-3                                  --
+│    └─SpaceTimeSplitBlock: 2-2                    --
+│    │    └─FullAttention: 3-6                     --
+│    │    │    └─RMSGroupNorm: 4-1                 8
+│    │    │    └─Linear: 4-2                       504
+│    │    │    └─SwiGLU: 4-3                       --
+│    │    │    └─Linear: 4-4                       136
+│    │    │    └─Linear: 4-5                       64
+│    │    │    └─LayerNorm: 4-6                    8
+│    │    │    └─LayerNorm: 4-7                    8
+│    │    │    └─RotaryEmbedding: 4-8              --
+│    │    │    └─Identity: 4-9                     --
+│    │    └─AxialTimeAttention: 3-7                --
+│    │    │    └─RMSGroupNorm: 4-10                8
+│    │    │    └─Conv3d: 4-11                      216
+│    │    │    └─Conv3d: 4-12                      72
+│    │    │    └─LayerNorm: 4-13                   8
+│    │    │    └─LayerNorm: 4-14                   8
+│    │    │    └─RelativePositionBias: 4-15        --
+│    │    │    │    └─Embedding: 5-1               64
+│    │    │    └─Identity: 4-16                    --
+│    │    └─Identity: 3-8                          --
+├─ModuleDict: 1-4                                  --
+│    └─AdaptiveDVstrideDecoder: 2-3                --
+│    │    └─ConvTranspose3d: 3-9                   98,304
+│    │    └─RMSGroupNorm: 3-10                     192
+│    │    └─SiLU: 3-11                             --
+│    │    └─ConvTranspose3d: 3-12                  5,210,165
+===========================================================================
+Total params: 10,618,382
+Trainable params: 10,618,382
+Non-trainable params: 0
+===========================================================================
+[2026-10-27 00:48:39,105][walrus][INFO] - Assigning distribution strategy: ddp
+[2026-10-27 00:48:39,202][walrus][INFO] - Instantiate optimizer torch.optim.AdamW
+[2026-10-27 00:48:39,205][walrus][INFO] - Instantiate checkpointer walrus.trainer.checkpoints.CheckPointer
+[2026-10-27 00:48:39,207][walrus.trainer.checkpoints][INFO] - Source checkpoint path set to: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_2
+[2026-10-27 00:48:39,207][walrus.trainer.checkpoints][INFO] - Checkpointing to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+[2026-10-27 00:48:39,208][walrus][INFO] - Resume from checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_2
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/trainer/checkpoints.py:198: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:822: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:859: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:48:39,311][walrus][INFO] - Resume from epoch 2 with validation loss 0.11971502006053925
+[2026-10-27 00:48:39,311][walrus][INFO] - Instantiate learning rate scheduler walrus.optim.schedulers.InverseSqrtLinearRamps
+[2026-10-27 00:48:39,326][walrus][INFO] - Final configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 3
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+[2026-10-27 00:48:39,326][walrus][INFO] - Instantiate trainer walrus.trainer.Trainer
+[2026-10-27 00:48:39,476][walrus.trainer.training][INFO] - Epoch 3/3: starting training
+[2026-10-27 00:48:41,540][walrus.trainer.training][INFO] - Epoch    3, Batch 1/8, Rank   0, SyncStep: False:
+	 Data: active_matter                   , loss  5.8921, mem  0.69 GB, total_time 0.206s, data 1.0712s, fwd 0.915s, bw 0.074s, opt 0.000s
+NCCL version 2.21.5+cuda12.4
+[2026-10-27 00:48:43,125][walrus.trainer.training][INFO] - Epoch 3/3: training loss 36.4473
+[2026-10-27 00:48:43,627][walrus.trainer.training][INFO] - Epoch 3/3: starting valid validation
+[2026-10-27 00:48:43,628][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:48:44,017][walrus.trainer.training][INFO] - valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.4775, mem  0.52 GB, total_time 0.054s, model 0.0489s
+[2026-10-27 00:48:44,063][walrus.trainer.training][INFO] - valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.3599, mem  0.59 GB, total_time 0.044s, model 0.0393s
+[2026-10-27 00:48:44,170][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:44,170][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:48:44,189][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/valid_loss_dict_epoch3_rank0.pkl
+[2026-10-27 00:48:44,191][walrus.trainer.training][INFO] - Epoch 3/3: valid loss 0.11929868161678314
+[2026-10-27 00:48:44,193][walrus.trainer.training][INFO] - Epoch 3/3: starting rollout valid validation
+[2026-10-27 00:48:44,193][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:48:46,208][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.9262, mem  1.09 GB, total_time 0.062s, model 0.0536s
+[2026-10-27 00:48:46,265][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.9414, mem  1.56 GB, total_time 0.055s, model 0.0450s
+[2026-10-27 00:48:46,360][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:46,361][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_3_rank0_rollout_valid
+[2026-10-27 00:48:46,553][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_time_logs_epoch3_rank0.pkl
+[2026-10-27 00:48:46,590][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_loss_dict_epoch3_rank0.pkl
+[2026-10-27 00:48:46,592][walrus.trainer.training][INFO] - Epoch 3/3: rollout valid loss 0.2833755612373352
+[2026-10-27 00:48:46,602][walrus.trainer.checkpoints][INFO] - Save checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_3
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:768: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:711: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:48:46,729][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/best to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_3
+[2026-10-27 00:48:46,730][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/last to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_3
+[2026-10-27 00:48:46,731][walrus.trainer.training][INFO] - Epoch 3/3: starting test validation
+[2026-10-27 00:48:46,731][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:48:47,138][walrus.trainer.training][INFO] - test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.3921, mem  0.62 GB, total_time 0.048s, model 0.0439s
+[2026-10-27 00:48:47,178][walrus.trainer.training][INFO] - test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.4602, mem  0.59 GB, total_time 0.038s, model 0.0336s
+[2026-10-27 00:48:47,298][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:47,299][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:48:47,316][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/test_loss_dict_epoch3_rank0.pkl
+[2026-10-27 00:48:47,318][walrus.trainer.training][INFO] - Epoch 3/3: test loss 0.13010072708129883
+[2026-10-27 00:48:47,320][walrus.trainer.training][INFO] - Epoch 3/3: starting rollout test validation
+[2026-10-27 00:48:47,321][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:48:48,853][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.7974, mem  1.09 GB, total_time 0.062s, model 0.0536s
+[2026-10-27 00:48:48,999][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.6909, mem  1.56 GB, total_time 0.054s, model 0.0444s
+[2026-10-27 00:48:49,517][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:48:49,518][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_3_rank0_rollout_test
+[2026-10-27 00:48:49,705][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_time_logs_epoch3_rank0.pkl
+[2026-10-27 00:48:49,741][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_loss_dict_epoch3_rank0.pkl
+[2026-10-27 00:48:49,743][walrus.trainer.training][INFO] - Epoch 3/3: rollout test loss 0.030506139621138573
+wandb: 
+wandb: Run history:
+wandb:     avg_backward_time ▁
+wandb: avg_data_loading_time ▁
+wandb:      avg_forward_time ▁
+wandb:    avg_optimizer_time ▁
+wandb:     avg_time_per_step ▁
+wandb:                 epoch ▁
+wandb:                    lr ▁
+wandb:            param_norm ▁
+wandb:           peak_memory ▁
+wandb:          rollout_test ▁
+wandb:                +1,733 ...
+wandb: 
+wandb: Run summary:
+wandb:     avg_backward_time 0.04258
+wandb: avg_data_loading_time 0.26392
+wandb:      avg_forward_time 0.13792
+wandb:    avg_optimizer_time 0.00833
+wandb:     avg_time_per_step 0.45275
+wandb:                 epoch 3
+wandb:                    lr 0.00021
+wandb:            param_norm 25.70981
+wandb:           peak_memory 0.73872
+wandb:          rollout_test 0.03051
+wandb:                +1,733 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004834-rtet0ktn
+wandb: Find logs at: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004834-rtet0ktn/logs
+[rank0]:[W1027 00:48:50.095347913 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+=== Phase 4: resume (simulated resubmission 3), max_epoch=4 ===
+[2026-10-27 00:49:00,078][walrus.utils.experiment_utils][INFO] - No override experiment folder detected. Using default experiment folder /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+[2026-10-27 00:49:00,107][walrus.utils.experiment_utils][INFO] - Combining current field_index_map_override with previous config.
+[2026-10-27 00:49:00,110][walrus][INFO] - Run experiment test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+[2026-10-27 00:49:00,119][walrus][INFO] - Configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 4
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id rtet0ktn.
+wandb: Tracking run with wandb version 0.28.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004900-rtet0ktn
+wandb: View this run in the terminal with `wandb leet`
+[2026-10-27 00:49:00,764][walrus][INFO] - Instantiate datamodule debug
+[2026-10-27 00:49:01,635][walrus.data.multidataset][WARNING] - Failed to load convective_envelope_rsg dataset
+[2026-10-27 00:49:01,965][walrus.data.multidataset][WARNING] - Failed to load MHD_256 dataset
+[2026-10-27 00:49:02,503][walrus.data.multidataset][WARNING] - Failed to load post_neutron_star_merger dataset
+[2026-10-27 00:49:02,698][walrus.data.multidataset][WARNING] - Failed to load rayleigh_benard_uniform dataset
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/the_well/data/datasets.py:552: UserWarning: This is shear_flow v1.0, in which about 80% of the validation and test trajectories are exact copies of training trajectories. Results on its validation and test sets are not reliable. Get the corrected v2.0 with `the-well-download --dataset shear_flow`, after deleting any local copy.
+  warnings.warn(
+[2026-10-27 00:49:03,038][walrus.data.multidataset][WARNING] - Failed to load supernova_explosion_64 dataset
+[2026-10-27 00:49:03,489][walrus.data.multidataset][WARNING] - Failed to load viscoelastic_instability_v2 dataset
+[2026-10-27 00:49:04,348][walrus][INFO] - Instantiate model walrus.models.IsotropicModel
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/models/temporal_blocks/axial_time_attention.py:38: FutureWarning: `nn.init.kaiming_uniform` is now deprecated in favor of `nn.init.kaiming_uniform_`.
+  init.kaiming_uniform(
+===========================================================================
+Layer (type:depth-idx)                             Param #
+===========================================================================
+IsotropicModel                                     1
+├─PatchJittererBoundaryPad: 1-1                    --
+├─ModuleDict: 1-2                                  --
+│    └─SpaceBagAdaptiveDVstrideEncoder: 2-1        --
+│    │    └─Conv3d: 3-1                            5,210,112
+│    │    └─RMSGroupNorm: 3-2                      192
+│    │    └─SiLU: 3-3                              --
+│    │    └─Conv3d: 3-4                            98,304
+│    │    └─RMSGroupNorm: 3-5                      8
+├─ModuleList: 1-3                                  --
+│    └─SpaceTimeSplitBlock: 2-2                    --
+│    │    └─FullAttention: 3-6                     --
+│    │    │    └─RMSGroupNorm: 4-1                 8
+│    │    │    └─Linear: 4-2                       504
+│    │    │    └─SwiGLU: 4-3                       --
+│    │    │    └─Linear: 4-4                       136
+│    │    │    └─Linear: 4-5                       64
+│    │    │    └─LayerNorm: 4-6                    8
+│    │    │    └─LayerNorm: 4-7                    8
+│    │    │    └─RotaryEmbedding: 4-8              --
+│    │    │    └─Identity: 4-9                     --
+│    │    └─AxialTimeAttention: 3-7                --
+│    │    │    └─RMSGroupNorm: 4-10                8
+│    │    │    └─Conv3d: 4-11                      216
+│    │    │    └─Conv3d: 4-12                      72
+│    │    │    └─LayerNorm: 4-13                   8
+│    │    │    └─LayerNorm: 4-14                   8
+│    │    │    └─RelativePositionBias: 4-15        --
+│    │    │    │    └─Embedding: 5-1               64
+│    │    │    └─Identity: 4-16                    --
+│    │    └─Identity: 3-8                          --
+├─ModuleDict: 1-4                                  --
+│    └─AdaptiveDVstrideDecoder: 2-3                --
+│    │    └─ConvTranspose3d: 3-9                   98,304
+│    │    └─RMSGroupNorm: 3-10                     192
+│    │    └─SiLU: 3-11                             --
+│    │    └─ConvTranspose3d: 3-12                  5,210,165
+===========================================================================
+Total params: 10,618,382
+Trainable params: 10,618,382
+Non-trainable params: 0
+===========================================================================
+[2026-10-27 00:49:05,275][walrus][INFO] - Assigning distribution strategy: ddp
+[2026-10-27 00:49:05,372][walrus][INFO] - Instantiate optimizer torch.optim.AdamW
+[2026-10-27 00:49:05,375][walrus][INFO] - Instantiate checkpointer walrus.trainer.checkpoints.CheckPointer
+[2026-10-27 00:49:05,377][walrus.trainer.checkpoints][INFO] - Source checkpoint path set to: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_3
+[2026-10-27 00:49:05,377][walrus.trainer.checkpoints][INFO] - Checkpointing to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+[2026-10-27 00:49:05,378][walrus][INFO] - Resume from checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_3
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/trainer/checkpoints.py:198: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:822: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:859: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:49:05,477][walrus][INFO] - Resume from epoch 3 with validation loss 0.11929868161678314
+[2026-10-27 00:49:05,477][walrus][INFO] - Instantiate learning rate scheduler walrus.optim.schedulers.InverseSqrtLinearRamps
+[2026-10-27 00:49:05,492][walrus][INFO] - Final configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 4
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+[2026-10-27 00:49:05,492][walrus][INFO] - Instantiate trainer walrus.trainer.Trainer
+[2026-10-27 00:49:05,642][walrus.trainer.training][INFO] - Epoch 4/4: starting training
+[2026-10-27 00:49:07,718][walrus.trainer.training][INFO] - Epoch    4, Batch 1/8, Rank   0, SyncStep: False:
+	 Data: active_matter                   , loss  5.8447, mem  0.69 GB, total_time 0.207s, data 1.2351s, fwd 0.758s, bw 0.080s, opt 0.000s
+NCCL version 2.21.5+cuda12.4
+[2026-10-27 00:49:09,311][walrus.trainer.training][INFO] - Epoch 4/4: training loss 34.2901
+[2026-10-27 00:49:09,812][walrus.trainer.training][INFO] - Epoch 4/4: starting valid validation
+[2026-10-27 00:49:09,813][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:49:10,209][walrus.trainer.training][INFO] - valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.4728, mem  0.52 GB, total_time 0.053s, model 0.0475s
+[2026-10-27 00:49:10,255][walrus.trainer.training][INFO] - valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.3570, mem  0.59 GB, total_time 0.045s, model 0.0400s
+[2026-10-27 00:49:10,357][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:10,358][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:49:10,377][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/valid_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:10,378][walrus.trainer.training][INFO] - Epoch 4/4: valid loss 0.11832048743963242
+[2026-10-27 00:49:10,380][walrus.trainer.training][INFO] - Epoch 4/4: starting rollout valid validation
+[2026-10-27 00:49:10,381][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:49:12,230][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.9272, mem  1.09 GB, total_time 0.218s, model 0.2090s
+[2026-10-27 00:49:12,386][walrus.trainer.training][INFO] - rollout_valid: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.9417, mem  1.56 GB, total_time 0.055s, model 0.0453s
+[2026-10-27 00:49:12,555][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:12,556][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_4_rank0_rollout_valid
+[2026-10-27 00:49:12,747][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_time_logs_epoch4_rank0.pkl
+[2026-10-27 00:49:12,784][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_valid_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:12,786][walrus.trainer.training][INFO] - Epoch 4/4: rollout valid loss 0.2835826277732849
+[2026-10-27 00:49:12,795][walrus.trainer.checkpoints][INFO] - Save checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_4
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:768: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:711: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:49:12,923][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/best to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_4
+[2026-10-27 00:49:12,924][walrus.trainer.checkpoints][INFO] - Link checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/last to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_4
+[2026-10-27 00:49:12,925][walrus.trainer.training][INFO] - Epoch 4/4: starting test validation
+[2026-10-27 00:49:12,926][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:49:13,354][walrus.trainer.training][INFO] - test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.3879, mem  0.62 GB, total_time 0.052s, model 0.0477s
+[2026-10-27 00:49:13,394][walrus.trainer.training][INFO] - test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.4548, mem  0.59 GB, total_time 0.038s, model 0.0334s
+[2026-10-27 00:49:13,516][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:13,516][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:49:13,534][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/test_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:13,536][walrus.trainer.training][INFO] - Epoch 4/4: test loss 0.12877564132213593
+[2026-10-27 00:49:13,538][walrus.trainer.training][INFO] - Epoch 4/4: starting rollout test validation
+[2026-10-27 00:49:13,538][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:49:15,067][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.7989, mem  1.09 GB, total_time 0.062s, model 0.0538s
+[2026-10-27 00:49:15,215][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.6925, mem  1.56 GB, total_time 0.055s, model 0.0451s
+[2026-10-27 00:49:15,710][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:15,710][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_4_rank0_rollout_test
+[2026-10-27 00:49:15,910][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_time_logs_epoch4_rank0.pkl
+[2026-10-27 00:49:15,946][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:15,948][walrus.trainer.training][INFO] - Epoch 4/4: rollout test loss 0.030547594651579857
+wandb: 
+wandb: Run history:
+wandb:     avg_backward_time ▁
+wandb: avg_data_loading_time ▁
+wandb:      avg_forward_time ▁
+wandb:    avg_optimizer_time ▁
+wandb:     avg_time_per_step ▁
+wandb:                 epoch ▁
+wandb:                    lr ▁
+wandb:            param_norm ▁
+wandb:           peak_memory ▁
+wandb:          rollout_test ▁
+wandb:                +1,733 ...
+wandb: 
+wandb: Run summary:
+wandb:     avg_backward_time 0.04485
+wandb: avg_data_loading_time 0.2814
+wandb:      avg_forward_time 0.12052
+wandb:    avg_optimizer_time 0.00854
+wandb:     avg_time_per_step 0.45531
+wandb:                 epoch 4
+wandb:                    lr 0.00034
+wandb:            param_norm 25.71753
+wandb:           peak_memory 0.73872
+wandb:          rollout_test 0.03055
+wandb:                +1,733 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004900-rtet0ktn
+wandb: Find logs at: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004900-rtet0ktn/logs
+[rank0]:[W1027 00:49:16.305182706 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+=== Phase 5: resubmit of a finished run (clamp test), max_epoch=4 ===
+[2026-10-27 00:49:26,121][walrus.utils.experiment_utils][INFO] - No override experiment folder detected. Using default experiment folder /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+[2026-10-27 00:49:26,149][walrus.utils.experiment_utils][INFO] - Combining current field_index_map_override with previous config.
+[2026-10-27 00:49:26,152][walrus][INFO] - Run experiment test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+[2026-10-27 00:49:26,161][walrus][INFO] - Configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 4
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id rtet0ktn.
+wandb: Tracking run with wandb version 0.28.0
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004926-rtet0ktn
+wandb: View this run in the terminal with `wandb leet`
+[2026-10-27 00:49:26,806][walrus][INFO] - Instantiate datamodule debug
+[2026-10-27 00:49:27,674][walrus.data.multidataset][WARNING] - Failed to load convective_envelope_rsg dataset
+[2026-10-27 00:49:28,005][walrus.data.multidataset][WARNING] - Failed to load MHD_256 dataset
+[2026-10-27 00:49:28,538][walrus.data.multidataset][WARNING] - Failed to load post_neutron_star_merger dataset
+[2026-10-27 00:49:28,734][walrus.data.multidataset][WARNING] - Failed to load rayleigh_benard_uniform dataset
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/the_well/data/datasets.py:552: UserWarning: This is shear_flow v1.0, in which about 80% of the validation and test trajectories are exact copies of training trajectories. Results on its validation and test sets are not reliable. Get the corrected v2.0 with `the-well-download --dataset shear_flow`, after deleting any local copy.
+  warnings.warn(
+[2026-10-27 00:49:29,076][walrus.data.multidataset][WARNING] - Failed to load supernova_explosion_64 dataset
+[2026-10-27 00:49:29,526][walrus.data.multidataset][WARNING] - Failed to load viscoelastic_instability_v2 dataset
+[2026-10-27 00:49:30,383][walrus][INFO] - Instantiate model walrus.models.IsotropicModel
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/models/temporal_blocks/axial_time_attention.py:38: FutureWarning: `nn.init.kaiming_uniform` is now deprecated in favor of `nn.init.kaiming_uniform_`.
+  init.kaiming_uniform(
+===========================================================================
+Layer (type:depth-idx)                             Param #
+===========================================================================
+IsotropicModel                                     1
+├─PatchJittererBoundaryPad: 1-1                    --
+├─ModuleDict: 1-2                                  --
+│    └─SpaceBagAdaptiveDVstrideEncoder: 2-1        --
+│    │    └─Conv3d: 3-1                            5,210,112
+│    │    └─RMSGroupNorm: 3-2                      192
+│    │    └─SiLU: 3-3                              --
+│    │    └─Conv3d: 3-4                            98,304
+│    │    └─RMSGroupNorm: 3-5                      8
+├─ModuleList: 1-3                                  --
+│    └─SpaceTimeSplitBlock: 2-2                    --
+│    │    └─FullAttention: 3-6                     --
+│    │    │    └─RMSGroupNorm: 4-1                 8
+│    │    │    └─Linear: 4-2                       504
+│    │    │    └─SwiGLU: 4-3                       --
+│    │    │    └─Linear: 4-4                       136
+│    │    │    └─Linear: 4-5                       64
+│    │    │    └─LayerNorm: 4-6                    8
+│    │    │    └─LayerNorm: 4-7                    8
+│    │    │    └─RotaryEmbedding: 4-8              --
+│    │    │    └─Identity: 4-9                     --
+│    │    └─AxialTimeAttention: 3-7                --
+│    │    │    └─RMSGroupNorm: 4-10                8
+│    │    │    └─Conv3d: 4-11                      216
+│    │    │    └─Conv3d: 4-12                      72
+│    │    │    └─LayerNorm: 4-13                   8
+│    │    │    └─LayerNorm: 4-14                   8
+│    │    │    └─RelativePositionBias: 4-15        --
+│    │    │    │    └─Embedding: 5-1               64
+│    │    │    └─Identity: 4-16                    --
+│    │    └─Identity: 3-8                          --
+├─ModuleDict: 1-4                                  --
+│    └─AdaptiveDVstrideDecoder: 2-3                --
+│    │    └─ConvTranspose3d: 3-9                   98,304
+│    │    └─RMSGroupNorm: 3-10                     192
+│    │    └─SiLU: 3-11                             --
+│    │    └─ConvTranspose3d: 3-12                  5,210,165
+===========================================================================
+Total params: 10,618,382
+Trainable params: 10,618,382
+Non-trainable params: 0
+===========================================================================
+[2026-10-27 00:49:31,315][walrus][INFO] - Assigning distribution strategy: ddp
+[2026-10-27 00:49:31,414][walrus][INFO] - Instantiate optimizer torch.optim.AdamW
+[2026-10-27 00:49:31,417][walrus][INFO] - Instantiate checkpointer walrus.trainer.checkpoints.CheckPointer
+[2026-10-27 00:49:31,419][walrus.trainer.checkpoints][INFO] - Source checkpoint path set to: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_4
+[2026-10-27 00:49:31,419][walrus.trainer.checkpoints][INFO] - Checkpointing to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+[2026-10-27 00:49:31,420][walrus][INFO] - Resume from checkpoint /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints/step_4
+/leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus/trainer/checkpoints.py:198: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:822: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/lib/python3.11/site-packages/torch/distributed/fsdp/_state_dict_utils.py:859: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+[2026-10-27 00:49:31,527][walrus][INFO] - Resume from epoch 4 with validation loss 0.11832048743963242
+[2026-10-27 00:49:31,527][walrus][INFO] - Instantiate learning rate scheduler walrus.optim.schedulers.InverseSqrtLinearRamps
+[2026-10-27 00:49:31,541][walrus][INFO] - Final configuration:
+data_workers: 2
+name: test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002
+finetune: false
+automatic_setup: true
+trainer:
+  _target_: walrus.trainer.Trainer
+  max_epoch: 4
+  val_frequency: 1
+  rollout_val_frequency: 5
+  short_validation_length: 2
+  max_rollout_steps: 4
+  num_time_intervals: 5
+  enable_amp: false
+  loss_fn:
+    _target_: the_well.benchmark.metrics.MAE
+  formatter:
+    _target_: hydra.utils.get_class
+    path: walrus.data.well_to_multi_transformer.ChannelsFirstWithTimeFormatter
+  revin:
+    _target_: walrus.trainer.normalization_strat.SamplewiseRevNormalization
+    _partial_: true
+  prediction_type: delta
+  grad_acc_steps: 4
+  image_validation: false
+  video_validation: false
+  gradient_log_level: 0
+  clip_gradient: 5.0
+  log_interval: 10
+  loss_multiplier: 100.0
+  lr_scheduler_per_step: false
+  validation_suite:
+  - _target_: the_well.benchmark.metrics.NRMSE
+  - _target_: the_well.benchmark.metrics.VRMSE
+  - _target_: the_well.benchmark.metrics.binned_spectral_mse
+  - _target_: the_well.benchmark.metrics.PearsonR
+  batch_aggregation_fns:
+  - torch.mean
+  - torch.median
+  - torch.std
+  debug_mode: true
+  skip_spectral_metrics: true
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 0.0001
+  eps: 1.0e-10
+  lr: 0.0002
+lr_scheduler:
+  _target_: walrus.optim.schedulers.InverseSqrtLinearRamps
+  warmup_epochs: 10
+  cooldown_epochs: 10
+  warmup_lr_factor: 0.1
+  cooldown_lr_factor: 0.001
+model:
+  encoder:
+    _partial_: true
+    _target_: walrus.models.encoders.vstride_encoder.SpaceBagAdaptiveDVstrideEncoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    kernel_scales_seq:
+    - - 2
+      - 2
+    - - 4
+      - 2
+    - - 4
+      - 4
+    - - 8
+      - 4
+    variable_downsample: true
+    variable_deterministic_ds: true
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  decoder:
+    _partial_: true
+    _target_: walrus.models.decoders.vstride_decoder.AdaptiveDVstrideDecoder
+    learned_pad: true
+    base_kernel_size1d:
+    - - 4
+      - 4
+    base_kernel_size2d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    base_kernel_size3d:
+    - - 8
+      - 4
+    - - 8
+      - 4
+    - - 8
+      - 4
+    groups: 12
+    activation:
+      _partial_: true
+      _target_: torch.nn.SiLU
+  processor:
+    space_mixing:
+      _partial_: true
+      _target_: walrus.models.spatial_blocks.full_attention.FullAttention
+      num_heads: 2
+    time_mixing:
+      _partial_: true
+      _target_: walrus.models.temporal_blocks.axial_time_attention.AxialTimeAttention
+      num_heads: 2
+      bias_type: rel
+    channel_mixing:
+      _partial_: true
+      _target_: torch.nn.Identity
+    _partial_: true
+    _target_: walrus.models.spatiotemporal_blocks.space_time_split.SpaceTimeSplitBlock
+  norm_layer:
+    _partial_: true
+    _target_: walrus.models.shared_utils.normalization.RMSGroupNorm
+  _target_: walrus.models.IsotropicModel
+  hidden_dim: 8
+  projection_dim: 96
+  intermediate_dim: 192
+  processor_blocks: 1
+  drop_path: 0.05
+  groups: 2
+  max_d: 3
+  causal_in_time: false
+  include_d:
+  - 2
+  - 3
+  override_dimensionality: 3
+  jitter_patches: true
+  gradient_checkpointing_freq: 0
+data:
+  module_parameters:
+    _target_: walrus.data.MixedWellDataModule
+    batch_size: 4
+    data_workers: 1
+    n_steps_input: 2
+    n_steps_output: 1
+    max_samples: 8
+    well_dataset_info:
+      active_matter:
+        include_filters: []
+        exclude_filters: []
+  wandb_data_name: debug
+  well_base_path: /leonardo_work/ICT26_MHPC_0/sshamsi/datasets/
+  field_index_map_override:
+    pressure: 0
+    velocity_x: 1
+    velocity_y: 2
+    velocity_z: 3
+    density: 4
+    speed_of_sound: 5
+    concentration: 6
+    D_xx: 7
+    D_xy: 8
+    D_xz: 9
+    D_yx: 10
+    D_yy: 11
+    D_yz: 12
+    D_zx: 13
+    D_zy: 14
+    D_zz: 15
+    E_xx: 16
+    E_xy: 17
+    E_xz: 18
+    E_yx: 19
+    E_yy: 20
+    E_yz: 21
+    E_zx: 22
+    E_zy: 23
+    E_zz: 24
+    energy: 25
+    momentum_x: 26
+    momentum_y: 27
+    momentum_z: 28
+    pressure_re: 29
+    pressure_im: 30
+    mask: 31
+    magnetic_field_x: 32
+    magnetic_field_y: 33
+    magnetic_field_z: 34
+    A: 35
+    B: 36
+    height: 37
+    velocity_theta: 38
+    velocity_phi: 39
+    buoyancy: 40
+    tracer: 41
+    temperature: 42
+    c_zz: 43
+    C_xx: 44
+    C_xy: 45
+    C_xz: 46
+    C_yx: 47
+    C_yy: 48
+    C_yz: 49
+    C_zx: 50
+    C_zy: 51
+    C_zz: 52
+auto_resume: true
+folder_override: ''
+checkpoint_override: ''
+config_override: ''
+validation_mode: false
+frozen_components:
+- model
+distribution:
+  distribution_type: ddp
+  local_size: null
+logger:
+  wandb: true
+  wandb_project_name: walrus_leonardo_test
+checkpoint:
+  _target_: walrus.trainer.checkpoints.CheckPointer
+  save_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/checkpoints
+  load_checkpoint_path: null
+  coalesced_checkpoint_path: null
+  save_best: true
+  checkpoint_frequency: 20
+  align_fields: true
+  load_chkpt_after_finetuning_expansion: false
+finetuning_mods: {}
+experiment_dir: /leonardo_work/ICT26_MHPC_0/sshamsi/logs
+
+[2026-10-27 00:49:31,542][walrus][INFO] - Instantiate trainer walrus.trainer.Trainer
+[2026-10-27 00:49:31,562][walrus.trainer.training][INFO] - Epoch 4/4: starting test validation
+[2026-10-27 00:49:31,563][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=False on rank 0
+[2026-10-27 00:49:33,034][walrus.trainer.training][INFO] - test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.3879, mem  0.51 GB, total_time 0.971s, model 0.9667s
+[2026-10-27 00:49:33,068][walrus.trainer.training][INFO] - test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.4548, mem  0.58 GB, total_time 0.033s, model 0.0281s
+[2026-10-27 00:49:33,679][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:33,680][walrus.trainer.training][INFO] - Rank 0 passed barrier
+[2026-10-27 00:49:33,699][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/test_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:33,701][walrus.trainer.training][INFO] - Epoch 4/4: test loss 0.1287796050310135
+[2026-10-27 00:49:34,043][walrus.trainer.training][INFO] - Epoch 4/4: starting rollout test validation
+[2026-10-27 00:49:34,043][walrus.trainer.training][INFO] - Validating dataset active_matter with full_trajectory_mode=True on rank 0
+[2026-10-27 00:49:35,884][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 1/2, Rank   0: Field-time-averaged VRMSE  0.7989, mem  1.08 GB, total_time 0.218s, model 0.2091s
+[2026-10-27 00:49:36,042][walrus.trainer.training][INFO] - rollout_test: active_matter, Batch 2/2, Rank   0: Field-time-averaged VRMSE  0.6925, mem  1.55 GB, total_time 0.055s, model 0.0454s
+[2026-10-27 00:49:36,204][walrus.trainer.training][INFO] - Rank 0 waiting for barrier
+[2026-10-27 00:49:36,204][walrus.trainer.training][INFO] - Rank 0 passed barrier
+output_dir /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/active_matter/rollout_losses/epoch_4_rank0_rollout_test
+[2026-10-27 00:49:36,526][walrus.trainer.training][INFO] - Wrote out time logs to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_time_logs_epoch4_rank0.pkl
+[2026-10-27 00:49:36,563][walrus.trainer.training][INFO] - Wrote out loss dict to /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0/viz/loss_dicts/rollout_test_loss_dict_epoch4_rank0.pkl
+[2026-10-27 00:49:37,008][walrus.trainer.training][INFO] - Epoch 4/4: rollout test loss 0.030547669157385826
+wandb: 
+wandb: Run history:
+wandb:                                            epoch ▁
+wandb:                                       param_norm ▁
+wandb:                                     rollout_test ▁
+wandb:   rollout_test_active_matter/D_xx_MAE_T=0:1_mean ▁
+wandb: rollout_test_active_matter/D_xx_MAE_T=0:1_median ▁
+wandb:    rollout_test_active_matter/D_xx_MAE_T=0:1_std ▁
+wandb:   rollout_test_active_matter/D_xx_MAE_T=1:2_mean ▁
+wandb: rollout_test_active_matter/D_xx_MAE_T=1:2_median ▁
+wandb:    rollout_test_active_matter/D_xx_MAE_T=1:2_std ▁
+wandb:   rollout_test_active_matter/D_xx_MAE_T=2:4_mean ▁
+wandb:                                             +858 ...
+wandb: 
+wandb: Run summary:
+wandb:                                            epoch 4
+wandb:                                       param_norm 25.71753
+wandb:                                     rollout_test 0.03055
+wandb:   rollout_test_active_matter/D_xx_MAE_T=0:1_mean 0.00577
+wandb: rollout_test_active_matter/D_xx_MAE_T=0:1_median 0.00508
+wandb:    rollout_test_active_matter/D_xx_MAE_T=0:1_std 0.00098
+wandb:   rollout_test_active_matter/D_xx_MAE_T=1:1_mean nan
+wandb: rollout_test_active_matter/D_xx_MAE_T=1:1_median nan
+wandb:    rollout_test_active_matter/D_xx_MAE_T=1:1_std nan
+wandb:   rollout_test_active_matter/D_xx_MAE_T=1:2_mean 0.01602
+wandb:                                             +858 ...
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004926-rtet0ktn
+wandb: Find logs at: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/wandb/offline-run-20261027_004926-rtet0ktn/logs
+[rank0]:[W1027 00:49:38.234253173 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+=== Verifying continuation ===
+PASS: all 5 phases used the same experiment folder: /leonardo_work/ICT26_MHPC_0/sshamsi/logs/test_resume_wandb-debug-delta-Isotr[Space-Adapt-]-AdamW-0.0002/0
+PASS: checkpoints/last exists in the experiment folder.
+PASS: phase 2 log shows checkpoint resume from epoch 1.
+PASS: phase 3 log shows checkpoint resume from epoch 2.
+PASS: phase 4 log shows checkpoint resume from epoch 3.
+PASS: phase 5 log shows checkpoint resume from epoch 4.
+PASS: phase 5 did not train (run already finished).
+PASS: phase 5 ran the test validation at epoch 4 (clamp works).
+PASS: all 5 phases wrote a W&B offline run sharing id rtet0ktn.
+
+ALL CHECKS PASSED.
+
+To confirm on wandb.ai too, from the login node (needs wandb < 0.30 for --append):
+  cd /leonardo_work/ICT26_MHPC_0/sshamsi/logs && wandb sync --sync-all --append --include-offline --include-globs="run-rtet0ktn.wandb"
+  (--sync-all scans ./wandb relative to the current directory, hence the cd;
+  --include-globs limits the sync to this test's runs; --append attaches each
+  phase's history to the existing run id instead of creating a new run.)
+  Then open project walrus_leonardo_test and check run id rtet0ktn:
+  it should be a SINGLE run whose epoch metric rises from 1 to 4
+  without restarting (not 5 separate runs). Phase 5 adds no new
+  epoch: its test results go to step 4, which W&B may drop as a repeat.

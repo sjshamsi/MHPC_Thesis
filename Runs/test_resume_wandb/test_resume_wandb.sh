@@ -59,7 +59,7 @@ source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/bin/activate
 cd /leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus
 
 EXPERIMENT_DIR=/leonardo_work/ICT26_MHPC_0/sshamsi/logs
-TEST_LOG_DIR=$EXPERIMENT_DIR/test_resume_wandb
+TEST_LOG_DIR=$SLURM_SUBMIT_DIR/test_resume_wandb_logs
 mkdir -p "$TEST_LOG_DIR"
 
 COMMON_ARGS=(distribution=ddp server=leonardo data=debug model=debug trainer=debug
