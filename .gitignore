@@ -91,5 +91,12 @@ __pycache__
 outputs/
 wandb/
 
-# Thus guy just shows up sowmtimes as a test artifact
+# Ths guy just shows up sowmtimes as a test artifact
 extended_config.yaml
+
+# The Docs dir is gonna be constant throughout the branches so we don't wanna
+# track it here
+Docs/
+
+# Ignore VSCode settings
+.vscode/
