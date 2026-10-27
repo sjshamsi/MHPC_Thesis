@@ -14,10 +14,8 @@
 # Runs tests/test_lr_resume.py (LR schedule unchanged by checkpoint resume)
 # on a boost node.
 #
-# One-time setup (SLURM can't create the --output folder itself):
-#   mkdir -p /leonardo_work/ICT26_MHPC_0/sshamsi/logs/slurm/test_lr_resume
-# Usage:
-#   sbatch Runs/test_lr_resume/test_lr_resume.sh
+# Usage (submit.sh creates the --output folder, which SLURM won't):
+#   Tools/slurm/submit.sh Runs/test_lr_resume/test_lr_resume.sh
 #
 # Expect PASSED for both [linear_ramps] and [sqrt_ramps].
 

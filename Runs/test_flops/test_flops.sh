@@ -14,10 +14,8 @@
 # Runs the FLOP accounting tests (tests/test_flops.py, CPU) and the end-to-end check that
 # FLOP counters continue across a checkpoint resume, on a boost node.
 #
-# One-time setup (SLURM can't create the --output folder itself):
-#   mkdir -p /leonardo_work/ICT26_MHPC_0/sshamsi/logs/slurm/test_flops
-# Usage:
-#   sbatch Runs/test_flops/test_flops.sh
+# Usage (submit.sh creates the --output folder, which SLURM won't):
+#   Tools/slurm/submit.sh Runs/test_flops/test_flops.sh
 #
 # Expect every test PASSED.
 

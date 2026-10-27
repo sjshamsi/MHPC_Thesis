@@ -34,10 +34,8 @@
 # validation), plus trainer.debug_mode=True, which caps every validation, test and
 # rollout pass at short_validation_length batches instead of the full sets.
 #
-# One-time setup (SLURM does not create the --output folder itself):
-#   mkdir -p /leonardo_work/ICT26_MHPC_0/sshamsi/logs/slurm/test_resume_wandb
-# Usage:
-#   sbatch Runs/test_resume_wandb/test_resume_wandb.sh
+# Usage (submit.sh creates the --output folder, which SLURM won't):
+#   Tools/slurm/submit.sh Runs/test_resume_wandb/test_resume_wandb.sh
 #
 # Should check online on wandb.ai afterwards
 
@@ -59,7 +57,7 @@ source /leonardo_work/ICT26_MHPC_0/sshamsi/pyenvs/env2/bin/activate
 cd /leonardo/home/userexternal/sshamsi0/Public_Thesis/walrus
 
 EXPERIMENT_DIR=/leonardo_work/ICT26_MHPC_0/sshamsi/logs
-TEST_LOG_DIR=$SLURM_SUBMIT_DIR/test_resume_wandb_logs
+TEST_LOG_DIR=$EXPERIMENT_DIR/test_resume_wandb
 mkdir -p "$TEST_LOG_DIR"
 
 COMMON_ARGS=(distribution=ddp server=leonardo data=debug model=debug trainer=debug

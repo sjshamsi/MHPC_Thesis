@@ -16,10 +16,8 @@
 # FlopAccountant observes must equal the one the registry implies, and both must give
 # identical forward_flops. Rerun after every registry rebuild.
 #
-# One-time setup (SLURM can't create the --output folder itself):
-#   mkdir -p /leonardo_work/ICT26_MHPC_0/sshamsi/logs/slurm/verify_registry
-# Usage:
-#   sbatch Runs/verify_registry/verify_registry.sh
+# Usage (submit.sh creates the --output folder, which SLURM won't):
+#   Tools/slurm/submit.sh Runs/verify_registry/verify_registry.sh
 #
 # Expect "ok" and "exact" on every dataset row, and exit code 0.
 

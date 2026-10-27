@@ -21,10 +21,8 @@
 # Then check_flops_fsdp.py compares the offline W&B history, every checkpoint's metadata.pt,
 # and Tools/flop_planner/count_WALRUS_flops.py --exact (same overrides, overrides.txt).
 #
-# One-time setup (SLURM can't create the --output folder itself):
-#   mkdir -p /leonardo_work/ICT26_MHPC_0/sshamsi/logs/slurm/test_flops_fsdp
-# Usage:
-#   sbatch Runs/test_flops_fsdp/test_flops_fsdp.sh
+# Usage (submit.sh creates the --output folder, which SLURM won't):
+#   Tools/slurm/submit.sh Runs/test_flops_fsdp/test_flops_fsdp.sh
 # Expect "ALL PASS" at the end of the .out file.
 
 set -uo pipefail
